@@ -41,6 +41,18 @@ nodejs {
 }
 ```
 
+The `nodejs` block synchronises with the NodeJS event loop, thus making access to the JavaScript engine safe. The
+lambda will be run on an alternative thread, and execution will block until the lambda returns.
+
+**You must only access JavaScript types from inside nodejs blocks**. This is important. NodeJS will be using the JVM
+heap so you can store references to JS objects wherever you like, however, due to the need to synchronize with the
+NodeJS event loop, even something as simple as calling toString() on a JS type will fail unless you are inside the block.
+JavaScript is not thread safe and implements rules similar to Visual Basic 6. [Learn more here](https://medium.com/graalvm/multi-threaded-java-javascript-language-interoperability-in-graalvm-2f19c1f9c37b). 
+
+It's safe to put `nodejs` blocks anywhere. You can nest them inside each other, and if you run a `nodejs` block whilst
+already on the event loop thread it will simply execute the code block immediately. Just remember not to block the
+NodeJS main thread itself: everything in JavaScript land is event driven.
+
 ## Value
 
 The native type you get out of `eval` is `Value`, which gives you a fairly standard stringly typed API:
