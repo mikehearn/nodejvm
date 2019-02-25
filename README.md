@@ -28,7 +28,7 @@ Start your Java programs as normal but run `nodejvm` instead of `java`, e.g.
 # Language injection
 
 IntelliJ offers "language injection", which means a file can contain multiple languages at once. This is enabled
-automatically when using NodeJS/J but to benefit you should change a setting first:
+automatically when using NodeJVM but to benefit you should change a setting first:
 
 1. Open your preferences and go to Editor > Language Injection > Advanced
 2. Under "Performance" select "Enable data flow analysis"

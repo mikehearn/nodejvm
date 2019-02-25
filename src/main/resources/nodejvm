@@ -18,11 +18,16 @@ else
     node=`which node`
 fi
 
+if [[ "$node" == "" ]]; then
+    echo "No node binary found on your path. Consider setting \$GRAALVM_PATH to the bin directory of your GraalVM install."
+    exit 1
+fi
+
 $node --version:graalvm >/dev/null 2>/dev/null
 if [[ $? != 0 ]]; then
     echo "Running 'node --version:graalvm' failed."
-    echo "Make sure the 'node' binary on your $PATH is the GraalVM version of node."
-    echo "Alternatively set the environment variable $GRAALVM_PATH to the bin directory."
+    echo "Make sure the '$node' binary on your \$PATH is the GraalVM version of node."
+    echo "Alternatively set the environment variable \$GRAALVM_PATH to the bin directory."
     exit 1
 fi
 
