@@ -1,4 +1,4 @@
-var javaEntryPoint = "net.plan99.nodejs.kotlin.NodeJSKt";
+var javaEntryPoint = process.argv[2];
 
 // Set up a task queue that we'll proxy onto the NodeJS main thread.
 //

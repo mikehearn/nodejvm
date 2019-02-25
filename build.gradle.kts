@@ -14,9 +14,8 @@ repositories {
 
 dependencies {
     compileOnly("org.jetbrains:annotations:16.0.2")
-    implementation(kotlin("stdlib-jdk8"))
-    compileOnly("org.graalvm.sdk:graal-sdk:1.0.0-rc12")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.4.0")
+    compileOnly(kotlin("stdlib-jdk8"))
+    api("org.graalvm.sdk:graal-sdk:1.0.0-rc12")
 }
 
 configure<JavaPluginConvention> {
@@ -26,16 +25,6 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-task<Exec>("startjs") {
-    dependsOn("build")
-    setCommandLine(
-        "/Users/mike/graalvm-ce-1.0.0-rc12/Contents/Home/bin/node",
-        "--jvm",
-        "--jvm.cp", sourceSets["main"].runtimeClasspath.asPath,
-        "--experimental-worker",
-        "src/main/resources/boot.js",
-        "one",
-        "two",
-        "three"
-    )
+tasks.withType<JavaExec> {
+
 }

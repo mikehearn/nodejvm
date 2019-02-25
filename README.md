@@ -1,7 +1,12 @@
 # NodeJS/J
 
-This repository demonstrates how to use NodeJS/npm modules directly from Java and Kotlin. Get access to the huge 
-ecosystem of JS libraries, whilst still benefiting from all the JVM has to offer!
+This repository demonstrates how to use NodeJS/npm modules directly from Java and Kotlin. Why is it useful:
+
+* Gain access to unique JavaScript modules, like the DAT peer to peer file sharing framework shown in the sample.
+* Combine your existing NodeJS and Java servers together, eliminating the overheads of REST, serialisation, two separate
+  virtual machines. Simplify your microservices architecture into being a polyglot architecture instead.
+* Use it to start porting NodeJS apps to the JVM world and languages, incrementally, one chunk at a time, whilst always
+  having a runnable app.
 
 # TODO
 
