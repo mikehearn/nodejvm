@@ -17,10 +17,21 @@ to smoothly access both worlds simultaneously.
 
 # TODO
 
-- Gradle plugin?
 - Java documentation
+- Gradle plugin?
+- Windows support when GraalVM has caught up.
 - Figure out lambda issue
 - Can node_modules directories be packaged as JARs?
+
+# Running polyglot programs
+
+Build with Gradle: `gradle build`
+
+Now add the `build/nodejvm` directory to your path, or copy the contents to somewhere on your path.
+
+Start your Java programs as normal but run `nodejvm` instead of `java`, e.g.
+
+`nodejvm -cp "libs/*.jar" my.main.Class arg1 arg2`
 
 # Language injection
 

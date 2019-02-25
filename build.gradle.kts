@@ -36,5 +36,10 @@ val genNodeJVMScript = task<Copy>("genNodeJVMScript") {
     fileMode = 0x000001ed  // rwxr-xr-x permissions, kotlin doesn't support octal literals
 }
 
-tasks["jar"].dependsOn(genNodeJVMScript)
+val copyInteropJar = task<Copy>("copyInteropJar") {
+    dependsOn(":jar")
+    from("$buildDir/libs/nodejs-interop-$version.jar")
+    into("$buildDir/nodejvm")
+}
 
+tasks["build"].dependsOn(genNodeJVMScript, copyInteropJar)
