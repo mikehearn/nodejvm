@@ -77,6 +77,9 @@ public class NodeJS {
     public static Executor executor = new Executor() {
         @Override
         public void execute(@NotNull Runnable command) {
+            if (linkage == null)
+                throw new IllegalStateException("This JVM was not started with the nodejvm script.");
+
             if (Thread.currentThread() == linkage.nodeJSThread)
                 command.run();
             else

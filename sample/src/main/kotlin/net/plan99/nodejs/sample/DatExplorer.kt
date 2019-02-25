@@ -13,7 +13,7 @@ interface MemoryUsage {
 
 interface DatConnection {
     fun host(): String
-    fun port(): Short
+    fun port(): Int
     fun type(): String
 }
 
@@ -28,13 +28,13 @@ fun main() {
         val callback by bind(Consumer { m: Map<String, Any?> ->
             val map = m.asValue().cast<DatConnection>()
             val host: String = map.host()
-            val port: Short = map.port()
+            val port: Int = map.port()
             val type: String = map.type()
             println("""New connection to $host:$port using $type""")
         })
 
         run("""
-            var Dat = require('dat-node');
+            let Dat = require('dat-node');
             Dat(downloadPath.getName(), { key: "778f8d955175c92e4ced5e4f5563f69bfec0c86cc6f670352c457943666fe639" }, function(err, dat) {
                 if (err) throw err;
                 console.log("Joined DAT network!");

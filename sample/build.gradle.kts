@@ -30,8 +30,7 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-task("printClasspath") {
-    doLast {
-        println(sourceSets["main"].runtimeClasspath.asPath)
-    }
+tasks.withType<JavaExec> {
+    dependsOn(":build")
+    executable("${rootProject.buildDir}/nodejvm/nodejvm")
 }

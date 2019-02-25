@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Gradle likes to probe the JVM version by running it this way, however the nodejs hybrid vm doesn't respond in the
+# same way so we provide the expected answer here.
+if [[ "$1" == "-version" ]]; then
+    cat <<EOVER >&2
+java version "1.8.0_191"
+Java(TM) SE Runtime Environment (build 1.8.0_191-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.191-b12, mixed mode)
+EOVER
+    exit 0
+fi
+
 # Check that we have the GraalVM node binary on our path, not normal node.
 if [[ "$GRAALVM_PATH" != "" ]]; then
     node="$GRAALVM_PATH/node"
