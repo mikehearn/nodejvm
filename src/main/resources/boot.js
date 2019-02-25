@@ -1,4 +1,9 @@
-var javaEntryPoint = process.argv[2];
+const javaEntryPoint = process.argv[2];
+
+if (javaEntryPoint === undefined) {
+    console.error("You must provide the main class name as the first argument.");
+    process.exit(1);
+}
 
 // Set up a task queue that we'll proxy onto the NodeJS main thread.
 //

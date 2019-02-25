@@ -1,3 +1,4 @@
+import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -21,10 +22,19 @@ dependencies {
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
+
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-tasks.withType<JavaExec> {
-
+val genNodeJVMScript = task<Copy>("genNodeJVMScript") {
+    val bootjs = "src/main/resources/boot.js"
+    inputs.file(bootjs)
+    from("src/main/resources/nodejvm")
+    into("$buildDir/nodejvm")
+    filter(ReplaceTokens::class, mapOf("tokens" to mapOf("bootjs" to file(bootjs).readText())))
+    fileMode = 0x000001ed  // rwxr-xr-x permissions, kotlin doesn't support octal literals
 }
+
+tasks["jar"].dependsOn(genNodeJVMScript)
+

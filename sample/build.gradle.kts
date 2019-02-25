@@ -30,17 +30,8 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-task<Exec>("startjs") {
-    dependsOn("build")
-    setCommandLine(
-        "/Users/mike/graalvm-ce-1.0.0-rc12/Contents/Home/bin/node",
-        "--jvm",
-        "--jvm.cp", sourceSets["main"].runtimeClasspath.asPath,
-        "--experimental-worker",
-        "../src/main/resources/boot.js",
-        application.mainClassName,
-        "one",
-        "two",
-        "three"
-    )
+task("printClasspath") {
+    doLast {
+        println(sourceSets["main"].runtimeClasspath.asPath)
+    }
 }

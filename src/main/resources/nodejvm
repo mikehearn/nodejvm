@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# Check that we have the GraalVM node binary on our path, not normal node.
+if [[ "$GRAALVM_PATH" != "" ]]; then
+    node="$GRAALVM_PATH/node"
+else
+    node=`which node`
+fi
+
+$node --version:graalvm >/dev/null 2>/dev/null
+if [[ $? != 0 ]]; then
+    echo "Running 'node --version:graalvm' failed."
+    echo "Make sure the 'node' binary on your $PATH is the GraalVM version of node."
+    echo "Alternatively set the environment variable $GRAALVM_PATH to the bin directory."
+    exit 1
+fi
+
+# Figure out our current directory.
+nodejvmDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
+interopJar="$nodejvmDir/nodejs-interop-1.0.jar"
+
+if [[ ! -e "$interopJar" ]]; then
+    echo "$interopJar not found, is this script installed correctly?"
+    exit 1
+fi
+
+# Mangle the command line arguments. We expect to receive a normal JVM command line
+# and want to convert it into a GraalJS node command line, which requires adding flags,
+# editing flag names, inserting options, etc.
+newargs=()
+i=0
+modifying=true
+declare -a args
+args=( $@ )
+argCount=${#args[@]}
+while (( j < argCount )); do
+    arg="${args[j]}"
+    newarg="$arg"
+    case "$arg" in
+        --classpath|-cp)
+           (( j++ ))
+           newargs[i]="--jvm.cp=$interopJar:${args[j]}"
+           (( j++ ))
+           (( i++ ))
+           continue
+           ;;
+        --*) if $modifying; then newarg="--jvm.${arg[@]:2}"; fi;;
+        -*) if $modifying; then newarg="--jvm.${arg[@]:1}"; fi;;
+        *) if $modifying; then
+               modifying=false;
+               newarg="/dev/stdin $newarg";
+           fi;;
+    esac
+    newargs[i]="$newarg"
+    (( i++ ))
+    (( j++ ))
+done
+
+# Make node look for modules in the executed-from directory in the same way
+# it would if run from the command line normally.
+export NODE_PATH=$PWD/node_modules
+
+# Now feed the boot.js script to the node binary. The quoted "EOF" here
+# doc string disables parsing and interpolation of the embedded script,
+# which is needed because backticks are meaningful to both JS and shell.
+
+cat <<"EOF" | $node --experimental-worker --jvm ${newargs[@]}
+@bootjs@
+EOF
