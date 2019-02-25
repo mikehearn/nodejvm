@@ -1,0 +1,7 @@
+{
+  "name": "nodejs-interop",
+  "version": "1.0.0",
+  "dependencies": {
+    "dat-node": "latest"
+  }
+}

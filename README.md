@@ -15,13 +15,6 @@ It provides an advanced JavaScript engine that has competitive performance with 
 NodeJS 10 that swaps out V8 for this enhanced JVM. In this way you can fuse together NodeJS and the JVM, allowing apps
 to smoothly access both worlds simultaneously.
 
-# TODO
-
-- Gradle plugin?
-- Windows support when GraalVM has caught up.
-- Figure out lambda issue
-- Can node_modules directories be packaged as JARs?
-
 # Running polyglot programs
 
 Build with Gradle: `gradle build`
@@ -41,6 +34,8 @@ automatically when using NodeJS/J but to benefit you should change a setting fir
 2. Under "Performance" select "Enable data flow analysis"
 
 Any string passed to eval will now be highlighted and edited as JavaScript, not a Java/Kotlin/Scala/etc string literal.
+
+![Screenshot of language injection](language-embedding.png)
 
 # Usage from Java
 
@@ -189,3 +184,14 @@ nodejs {
 
 For unclear reasons GraalJS always passes a JavaScript object into a callback as Map<String, Any?>, but you can easily 
 convert it to an interface as seen above.
+
+# TODO
+
+- Gradle plugin?
+- Windows support when GraalVM has caught up.
+- Figure out lambda issue
+- Can node_modules directories be packaged as JARs?
+
+# License
+
+Apache 2.0
