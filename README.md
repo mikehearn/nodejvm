@@ -17,7 +17,6 @@ to smoothly access both worlds simultaneously.
 
 # TODO
 
-- Java documentation
 - Gradle plugin?
 - Windows support when GraalVM has caught up.
 - Figure out lambda issue
@@ -43,6 +42,50 @@ automatically when using NodeJS/J but to benefit you should change a setting fir
 
 Any string passed to eval will now be highlighted and edited as JavaScript, not a Java/Kotlin/Scala/etc string literal.
 
+# Usage from Java
+
+The `NodeJS` class gives you access to the JavaScript runtime:
+
+```java
+import net.plan99.nodejs.NodeJS;
+
+public class Demo {
+    public static void main(String[] args) {
+        int result = NodeJS.runJS(() ->
+            NodeJS.eval("return 2 + 3 + 4").asInt()
+        );
+        System.out.println(result);
+    }
+}
+```
+
+Evaluate JavaScript code with the `eval` static method. Before you can use it, you need to get yourself onto the
+NodeJS main thread by providing a lambda to `NodeJS.runJS`. See below for more info on this.
+
+What you get back from `eval` is a GraalVM Polyglot `Value` class ([javadoc](http://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html)). 
+[Documentation for the Polyglot API is here.](http://www.graalvm.org/sdk/javadoc/)
+
+`Value` is a pretty typical variant-type object. You can cast to various primitives, cast to interfaces (see below),
+access members, execute it and so on. You may also cast JavaScript objects to `Map<String, Object>` and treat them
+as dictionaries in the standard scripting language manner. 
+
+There is also a `NodeJS.runJSAsync` method which returns a `CompletableFuture` with the result of the lambda, instead
+of waiting, and an `Executor` that executes jobs on the NodeJS thread.
+
+# Concurrency and access to the JavaScript world
+
+**You must only access JavaScript types from the NodeJS thread**. This is important. NodeJS will be using the JVM
+heap so you can store references to JS objects wherever you like, however, due to the need to synchronize with the
+event loop, even something as simple as calling `toString()` on a JS type will fail unless you are on the right thread.
+This is because JavaScript is not thread safe, does not provide any kind of shared memory concurrency and generally
+implements rules similar to Visual Basic 6. [Learn more here](https://medium.com/graalvm/multi-threaded-java-javascript-language-interoperability-in-graalvm-2f19c1f9c37b). 
+
+It's safe to enter the NodeJS thread with `runJS` anywhere. You can nest calls inside each other, as if you run 
+a `NodeJS.runJS` block whilst already on the event loop thread it will simply execute the code block immediately. 
+Just remember not to block the NodeJS main thread itself: everything in JavaScript land is event driven.
+
+Whilst Java is usable, it's a lot more convenient to use a more modern language like Kotlin.
+
 # Usage from Kotlin
 
 You may evaluate JavaScript when inside a `nodejs` block, like so:
@@ -54,7 +97,7 @@ val i: Int = nodejs {
 ```
 
 Kotlin's type inference combined with GraalJS and the Polyglot infrastructure ensures that you can take the result
-of `eval` and stick it into a normal Kotlin variable most of the time.
+of `eval` and stick it into a normal Kotlin variable most of the time. Polyglot casts will be performed automatically.
 
 If you don't want any return value, use `run` instead of `eval`:
 
@@ -64,21 +107,9 @@ nodejs {
 }
 ```
 
-The `nodejs` block synchronises with the NodeJS event loop, thus making access to the JavaScript engine safe. The
-lambda will be run on an alternative thread, and execution will block until the lambda returns.
+The `nodejs` block synchronises with the NodeJS event loop, thus making access to the JavaScript engine safe.
 
-**You must only access JavaScript types from inside nodejs blocks**. This is important. NodeJS will be using the JVM
-heap so you can store references to JS objects wherever you like, however, due to the need to synchronize with the
-NodeJS event loop, even something as simple as calling toString() on a JS type will fail unless you are inside the block.
-JavaScript is not thread safe and implements rules similar to Visual Basic 6. [Learn more here](https://medium.com/graalvm/multi-threaded-java-javascript-language-interoperability-in-graalvm-2f19c1f9c37b). 
-
-It's safe to put `nodejs` blocks anywhere. You can nest them inside each other, and if you run a `nodejs` block whilst
-already on the event loop thread it will simply execute the code block immediately. Just remember not to block the
-NodeJS main thread itself: everything in JavaScript land is event driven.
-
-## Value
-
-The native type you get out of `eval` is `Value`, which gives you a fairly standard stringly typed API:
+If you ask `eval` for a `Value`, you can use Kotlin's indexing operators to treat it as a dictionary:
 
 ```kotlin
 nodejs {
@@ -156,5 +187,5 @@ nodejs {
 }
 ```
 
-Unfortunately, for unclear reasons GraalJS always passes a JavaScript object into a callback as Map<String, Any?>, but
-you can easily convert it to an interface as seen above.
+For unclear reasons GraalJS always passes a JavaScript object into a callback as Map<String, Any?>, but you can easily 
+convert it to an interface as seen above.

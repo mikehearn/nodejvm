@@ -1,7 +1,6 @@
 package net.plan99.nodejs;
 
 import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.Value;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.Supplier;
 
 /**
@@ -82,10 +84,18 @@ public class NodeJS {
         }
     };
 
+    /**
+     * Schedules execution of the given {@link Supplier} onto the NodeJS thread, and returns a future that will
+     * complete when it's been run.
+     */
     public static <T> CompletableFuture<T> runJSAsync(Supplier<T> callable) {
         return CompletableFuture.supplyAsync(callable, executor);
     }
 
+    /**
+     * Runs the given {@link Supplier} on the NodeJS thread, blocks until execution has been performed and
+     * returns the result that was computed.
+     */
     public static <T> T runJS(Supplier<T> callable) {
         try {
             return runJSAsync(callable).get();
@@ -99,12 +109,22 @@ public class NodeJS {
         }
     }
 
+    /**
+     * Evaluates the given string and returns a generic {@link Value} object representing the result, that can then
+     * be converted into more useful forms. Note that you must be on the NodeJS thread for this to work (see
+     * {@link #runJS(Supplier)} for how to do this).
+     *
+     * @throws IllegalStateException if you're not on the NodeJS thread.
+     */
     public static Value eval(@Language("JavaScript") String js) {
         if (linkage.nodeJSThread != Thread.currentThread())
             throw new IllegalStateException("You can only runJS NodeJS.eval() when on the main NodeJS thread, use runJSAsync or runJS and use this inside the lambda.");
         return linkage.evalFunction.execute(js);
     }
 
+    /**
+     * Returns the {@link Context} for the NodeJS main thread.
+     */
     public static Context polyglotContext() {
         return linkage.ctx;
     }
