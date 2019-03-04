@@ -182,14 +182,13 @@ nodejs {
 }
 ```
 
-For unclear reasons GraalJS always passes a JavaScript object into a callback as Map<String, Any?>, but you can easily 
-convert it to an interface as seen above.
+Due to a GraalJS bug, it always passes a JavaScript object into a lambda as Map<String, Any?>, but you can easily 
+convert it to an interface as seen above. [Alternatively just make it a real public class](https://github.com/graalvm/graaljs/issues/120).
 
 # TODO
 
 - Gradle plugin?
 - Windows support when GraalVM has caught up.
-- Figure out lambda issue
 - Can node_modules directories be packaged as JARs?
 
 # License

@@ -8,5 +8,5 @@ pluginManagement {
     }
 }
 rootProject.name = 'nodejs-interop'
-include 'sample'
+include 'dat-sample'
 
