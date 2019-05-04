@@ -50,6 +50,9 @@ class NodeJSBlock internal constructor() {
     /** Allows you to read JS properties of the given [Value] using Kotlin indexing syntax. */
     inline operator fun <reified T> Value.get(key: String): T = getMember(key).cast()
 
+    /** Allows you to read JS properties of the given [Value] using Kotlin indexing syntax. */
+    operator fun Value.get(key: String): Value = getMember(key)
+
     /** Allows you to set JS properties of the given [Value] using Kotlin indexing syntax. */
     operator fun Value.set(key: String, value: Any?) = putMember(key, value)
 
