@@ -17,15 +17,17 @@ to smoothly access both worlds simultaneously.
 
 # Running polyglot programs
 
-Build with Gradle: `gradle build`
+Download the latest release from the [releases page](https://github.com/mikehearn/nodejvm/releases).
 
-Now add the `build/nodejvm` directory to your path, or copy the contents to somewhere on your path.
+Now add the `nodejvm` directory to your path, or copy the contents to somewhere on your path.
 
 Start your Java programs as normal but run `nodejvm` instead of `java`, e.g.
 
 `nodejvm -cp "libs/*.jar" my.main.Class arg1 arg2`
 
-# Language injection
+# Using 
+
+## Language injection
 
 IntelliJ offers "language injection", which means a file can contain multiple languages at once. This is enabled
 automatically when using NodeJVM but to benefit you should change a setting first:
@@ -33,11 +35,11 @@ automatically when using NodeJVM but to benefit you should change a setting firs
 1. Open your preferences and go to Editor > Language Injection > Advanced
 2. Under "Performance" select "Enable data flow analysis"
 
-Any string passed to eval will now be highlighted and edited as JavaScript, not a Java/Kotlin/Scala/etc string literal.
+Any string passed to `eval` will now be highlighted and edited as JavaScript, not a Java/Kotlin/Scala/etc string literal.
 
 ![Screenshot of language injection](language-embedding.png)
 
-# Usage from Java
+## Usage from Java
 
 The `NodeJS` class gives you access to the JavaScript runtime:
 
@@ -67,7 +69,7 @@ as dictionaries in the standard scripting language manner.
 There is also a `NodeJS.runJSAsync` method which returns a `CompletableFuture` with the result of the lambda, instead
 of waiting, and an `Executor` that executes jobs on the NodeJS thread.
 
-# Concurrency and access to the JavaScript world
+## Concurrency and access to the JavaScript world
 
 **You must only access JavaScript types from the NodeJS thread**. This is important. NodeJS will be using the JVM
 heap so you can store references to JS objects wherever you like, however, due to the need to synchronize with the
@@ -81,7 +83,7 @@ Just remember not to block the NodeJS main thread itself: everything in JavaScri
 
 Whilst Java is usable, it's a lot more convenient to use a more modern language like Kotlin.
 
-# Usage from Kotlin
+## Usage from Kotlin
 
 You may evaluate JavaScript when inside a `nodejs` block, like so:
 
@@ -126,7 +128,7 @@ When evaluated in NodeJS `process.memoryUsage()` will give you something like th
 
 So you can see how to use Kotlin's property access syntax in the same way you might in JS itself.
 
-## Interface access
+### Interface access
 
 You can also request from `eval` an interface. Method calls are then turned into property and method accesses in the
 obvious way:
@@ -145,7 +147,7 @@ nodejs {
 Note you must use `fun` and not `val` because GraalJS doesn't currently understand JavaBean method naming conventions,
 which the Kotlin compiler uses for `val` and `var`.
 
-## Top level variable binding
+### Top level variable binding
 
 You'll often want to pass Java/Kotlin objects into the JS world. You can do this by binding a JavaScript variable
 to a Kotlin variable and then reading/writing to it as normal:
@@ -167,7 +169,7 @@ variable with the same name.
 Recall that in JavaScript `var` creates a locally scoped variable, so to interop like this you must define JS variables
 at the top level without `var`. That's why we run `x = 5` above and not `var x = 5`.
 
-## Callbacks and lambdas
+### Callbacks and lambdas
 
 You unfortunately cannot pass Kotlin lambdas straight into JavaScript due to [KT-30107](https://youtrack.jetbrains.com/issue/KT-301070).
 So you have to use the Java functional types instead, like this:
