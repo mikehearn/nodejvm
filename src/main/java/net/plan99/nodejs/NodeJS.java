@@ -1,6 +1,8 @@
 package net.plan99.nodejs;
 
+import net.plan99.nodejs.kotlin.NodeJSBlock;
 import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.TypeLiteral;
 import org.graalvm.polyglot.Value;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
@@ -71,6 +73,22 @@ public class NodeJS {
     }
 
     /**
+     * Returns true if executing within the main NodeJS thread. Note: does NOT return true if you are executing on
+     * some other worker you created yourself.
+     */
+    public static boolean isOnMainNodeThread() {
+        return Thread.currentThread() == linkage.nodeJSThread;
+    }
+
+    /**
+     * Throws {@link IllegalStateException} if you aren't on the NodeJS main thread.
+     */
+    public static void checkOnMainNodeThread() {
+        if (!isOnMainNodeThread())
+            throw new IllegalStateException("You are not currently on the NodeJS thread and thus cannot access the JavaScript world. Surround your calls to JS with NodeJS.runJS(), NodeJS.runJSAsync() or the Kotlin nodejs{} block.");
+    }
+
+    /**
      * This {@link Executor} runs the given commands on the NodeJS event loop thread. The other utility functions
      * on this class are all just utilities that delegate to this executor.
      */
@@ -120,8 +138,7 @@ public class NodeJS {
      * @throws IllegalStateException if you're not on the NodeJS thread.
      */
     public static Value eval(@Language("JavaScript") String js) {
-        if (linkage.nodeJSThread != Thread.currentThread())
-            throw new IllegalStateException("You can only runJS NodeJS.eval() when on the main NodeJS thread, use runJSAsync or runJS and use this inside the lambda.");
+        checkOnMainNodeThread();
         return linkage.evalFunction.execute(js);
     }
 
@@ -130,5 +147,19 @@ public class NodeJS {
      */
     public static Context polyglotContext() {
         return linkage.ctx;
+    }
+
+    /**
+     * Converts the {@link Value} to a JVM type in the following way:<p>
+     *
+     * <ol>
+     * <li> If the type is an interface not annotated with {@code @FunctionalInterface} then a special proxy is returned that
+     *    knows how to map JavaBean style property methods on that interface to JavaScript properties.</li>
+     * <li> Otherwise, the {@link Value#as} method is used with the {@link TypeLiteral} so generics are preserved and
+     *    the best possible translation occurs.</li>
+     * </ol>
+     */
+    public static <T> T castValue(Value value, TypeLiteral<T> typeLiteral) {
+        return NodeJSBlock.castValue(value, typeLiteral);
     }
 }
