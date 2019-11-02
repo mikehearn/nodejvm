@@ -38,7 +38,7 @@ public class NodeJS {
     private volatile static Linkage linkage;
 
     /**
-     * Called from the boot.js file and runs on the net.plan99.nodejs.NodeJS event loop thread.
+     * Called from the boot.js file and runs on the nodejs event loop thread.
      */
     @SuppressWarnings("unused")
     public static void boot(String entryPointName,

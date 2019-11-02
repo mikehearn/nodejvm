@@ -61,9 +61,11 @@ class NodeJSBlock internal constructor() {
     /** Implementation for [bind]. The necessary operator functions are defined as extensions to allow for reified generics. */
     class Binding<T>
     operator fun <T> Binding<T>.setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-        bindings["transfer"] = value
-        NodeJS.eval("${property.name} = Polyglot.import('transfer');")
-        bindings.removeMember("transfer")
+        // This rather ugly hack is required as we can't just insert the name directly,
+        // we have to go via an intermediate 'bindings' map.
+        bindings["__nodejvm_transfer"] = value
+        NodeJS.eval("${property.name} = Polyglot.import('__nodejvm_transfer');")
+        bindings.removeMember("__nodejvm_transfer")
     }
     inline operator fun <reified T> Binding<T>.getValue(thisRef: Any?, property: KProperty<*>): T = eval(property.name)
 
@@ -78,7 +80,7 @@ class NodeJSBlock internal constructor() {
 
     /**
      * Use this in property delegate syntax to access top level global variables in the NodeJS context. By declaring
-     * a variable as `var x: String by bind()` you can read and write the 'x' variable in JavaScript world.
+     * a variable as `var x: String by bind()` you can read and write the 'x' global variable in JavaScript world.
      */
     fun <T> bind(default: T? = null) = Binder(default)
 }

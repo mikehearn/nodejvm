@@ -10,7 +10,7 @@ node_modules/
 
 ### Gradle template
 .gradle
-/build/
+build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -20,4 +20,6 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
-/sample/download/
+
+dat-sample/download
+dat-sample/dumps

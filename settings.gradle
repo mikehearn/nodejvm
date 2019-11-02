@@ -9,4 +9,5 @@ pluginManagement {
 }
 rootProject.name = 'nodejs-interop'
 include 'dat-sample'
+include 'spinners-sample'
 

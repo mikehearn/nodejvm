@@ -1,16 +1,5 @@
 #!/bin/bash
 
-# Gradle likes to probe the JVM version by running it this way, however the nodejs hybrid vm doesn't respond in the
-# same way so we provide the expected answer here.
-if [[ "$1" == "-version" ]]; then
-    cat <<EOVER >&2
-java version "1.8.0_191"
-Java(TM) SE Runtime Environment (build 1.8.0_191-b12)
-Java HotSpot(TM) 64-Bit Server VM (build 25.191-b12, mixed mode)
-EOVER
-    exit 0
-fi
-
 # Check that we have the GraalVM node binary on our path, not normal node.
 if [[ "$GRAALVM_PATH" != "" ]]; then
     node="$GRAALVM_PATH/node"
@@ -29,6 +18,13 @@ if [[ $? != 0 ]]; then
     echo "Make sure the '$node' binary on your \$PATH is the GraalVM version of node."
     echo "Alternatively set the environment variable \$GRAALVM_PATH to the bin directory."
     exit 1
+fi
+
+# Gradle likes to probe the JVM version by running it this way, however the nodejs hybrid vm doesn't respond in the
+# same way so we provide the expected answer here.
+if [[ "$1" == "-version" ]]; then
+    `dirname $node`/java -version
+    exit 0
 fi
 
 # Figure out our current directory.
@@ -53,15 +49,15 @@ while (( j < argCount )); do
     arg="${args[j]}"
     newarg="$arg"
     case "$arg" in
-        --classpath|-cp)
+        --classpath|-cp|-classpath)
            (( j++ ))
-           newargs[i]="--jvm.cp=$interopJar:${args[j]}"
+           newargs[i]="--vm.cp=$interopJar:${args[j]}"
            (( j++ ))
            (( i++ ))
            continue
            ;;
-        --*) if $modifying; then newarg="--jvm.${arg[@]:2}"; fi;;
-        -*) if $modifying; then newarg="--jvm.${arg[@]:1}"; fi;;
+        --*) if $modifying; then newarg="--vm.${arg[@]:2}"; fi;;
+        -*) if $modifying; then newarg="--vm.${arg[@]:1}"; fi;;
         *) if $modifying; then
                modifying=false;
                newarg="/dev/stdin $newarg";
