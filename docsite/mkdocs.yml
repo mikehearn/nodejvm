@@ -1,0 +1,27 @@
+site_name: NodeJVM
+site_description: Smooth and easy NodeJS interop for the JVM
+site_author: Mike Hearn
+
+repo_name: mikehearn/nodejvm
+repo_url: https://github.com/mikehearn/nodejvm
+
+theme:
+  name: 'material'
+  palette:
+    primary: 'blue'
+    accent: 'blue'
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
+
+nav:
+  - index.md
+  - running-polyglot-programs.md
+  - concurrency.md
+  - types.md
+  - using-from-java.md
+  - using-from-kotlin.md
+  - language-injection.md

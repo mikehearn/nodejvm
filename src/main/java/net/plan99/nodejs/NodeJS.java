@@ -39,10 +39,9 @@ public class NodeJS {
 
     private volatile static Linkage linkage;
 
-    /**
-     * Called from the boot.js file and runs on the nodejs event loop thread.
-     */
+    // Called from the boot.js file as part of NodeJVM startup, do not call.
     @SuppressWarnings("unused")
+    @Deprecated
     public static void boot(String entryPointName,
                             LinkedBlockingDeque<Runnable> taskQueue,
                             Value evalFunction,
