@@ -265,6 +265,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#running-the-samples" class="md-nav__link">
+    Running the samples
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#from-gradle" class="md-nav__link">
     From Gradle
   </a>
@@ -363,6 +370,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#running-the-samples" class="md-nav__link">
+    Running the samples
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#from-gradle" class="md-nav__link">
     From Gradle
   </a>
@@ -393,8 +407,21 @@
 <p>Now add the <code>nodejvm</code> directory to your path, or copy the contents to somewhere on your path.</p>
 <p>Start your Java programs as normal but run <code>nodejvm</code> instead of <code>java</code>, e.g.</p>
 <p><code>nodejvm -cp "libs/*.jar" my.main.Class arg1 arg2</code></p>
+<h2 id="running-the-samples">Running the samples<a class="headerlink" href="#running-the-samples" title="Permanent link">&para;</a></h2>
+<p>Check out the NodeJVM repository. Then try:</p>
+<div class="codehilite"><pre><span></span><span class="n">gradle</span> <span class="n">dat</span><span class="o">-</span><span class="n">sample</span><span class="p">:</span><span class="n">run</span>
+</pre></div>
+
+
+<p>It should join the DAT network and might print some peer infos, depending on your luck.</p>
+<p>Also try something a bit less Gradley:</p>
+<div class="codehilite"><pre><span></span><span class="n">gradle</span> <span class="n">build</span> <span class="n">spinners</span><span class="o">-</span><span class="n">sample</span><span class="p">:</span><span class="n">shadowJar</span>
+<span class="p">..</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">nodejvm</span><span class="o">/</span><span class="n">nodejvm</span> <span class="o">-</span><span class="n">jar</span> <span class="n">build</span><span class="o">/</span><span class="n">libs</span><span class="o">/</span><span class="n">spinners</span><span class="o">-</span><span class="n">sample</span><span class="o">-*-</span><span class="k">all</span><span class="p">.</span><span class="n">jar</span>
+</pre></div>
+
+
 <h2 id="from-gradle">From Gradle<a class="headerlink" href="#from-gradle" title="Permanent link">&para;</a></h2>
-<p>This is currently a bit awkward. The easiest way is to adjust your JavaCompile tasks to run <code>nodejvm</code> instead of <code>java</code>:</p>
+<p>The easiest way is to adjust your JavaCompile tasks to run <code>nodejvm</code> instead of <code>java</code>:</p>
 <div class="codehilite"><pre><span></span><span class="n">tasks</span><span class="p">.</span><span class="n">withType</span><span class="o">&lt;</span><span class="n">JavaExec</span><span class="o">&gt;</span> <span class="err">{</span>
     <span class="n">executable</span><span class="p">(</span><span class="ss">&quot;nodejvm&quot;</span><span class="p">)</span>
 <span class="err">}</span>
