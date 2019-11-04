@@ -29,7 +29,7 @@ fi
 
 # Figure out our current directory.
 nodejvmDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
-interopJar="$nodejvmDir/nodejs-interop-1.0.jar"
+interopJar="$nodejvmDir/nodejs-interop-1.1.jar"
 
 if [[ ! -e "$interopJar" ]]; then
     echo "$interopJar not found, is this script installed correctly?"
@@ -75,7 +75,8 @@ export NODE_PATH=$PWD/node_modules
 # Now feed the boot.js script to the node binary. The quoted "EOF" here
 # doc string disables parsing and interpolation of the embedded script,
 # which is needed because backticks are meaningful to both JS and shell.
-
-cat <<"EOF" | $node --experimental-worker --jvm ${newargs[@]}
+cmd="$node --experimental-worker --jvm ${newargs[@]}"
+echo $cmd
+cat <<"EOF" | $cmd
 @bootjs@
 EOF

@@ -44,4 +44,4 @@ let evalWrapper = function(str)  {
 };
 
 // Now pass control to the Java side.
-Java.type('net.plan99.nodejs.NodeJS').boot(javaEntryPoint, javaToJSQueue, evalWrapper, process.argv.slice(2));
+Java.type('net.plan99.nodejs.java.NodeJS').boot(javaEntryPoint, javaToJSQueue, evalWrapper, process.argv.slice(2));
