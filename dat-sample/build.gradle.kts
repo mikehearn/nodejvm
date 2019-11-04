@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.net.URI
 
 plugins {
     java
@@ -16,11 +17,18 @@ application {
 
 repositories {
     mavenCentral()
+    jcenter()
+    maven {
+        url = URI("https://dl.bintray.com/mikehearn/open-source")
+    }
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation(rootProject)   // This would be:   implementation("net.plan99.nodejs:nodejs-interop:1.0") in a real project
+    implementation(rootProject)
+
+    // In your programs, you'd write something like:
+    // implementation("net.plan99:nodejvm:1.1")
 }
 
 configure<JavaPluginConvention> {

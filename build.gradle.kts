@@ -110,7 +110,7 @@ bintray {
         repo = "open-source"
         name = "nodejvm"
         setLicenses("Apache-2.0")
-        vcsUrl = "https://github.com/mikehearn/graviton-browser.git"
+        vcsUrl = "https://github.com/mikehearn/nodejvm.git"
         version.apply {
             name = project.version.toString()
             desc = "NodeJS interop for GraalVM"

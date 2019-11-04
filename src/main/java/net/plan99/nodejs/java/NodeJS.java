@@ -8,18 +8,14 @@ import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.JarURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
@@ -34,8 +30,6 @@ import java.util.jar.JarInputStream;
  * Provides an interface to the NodeJS runtime for Java developers. You can only access the NodeJS world
  * when running on the event loop thread, which means you must use the various runJS methods on this class
  * to get onto the correct thread before using eval.
- *
- * @suppress
  */
 @SuppressWarnings("WeakerAccess")
 public class NodeJS {

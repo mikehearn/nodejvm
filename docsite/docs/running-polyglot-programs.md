@@ -4,6 +4,9 @@ Download the latest release from the [releases page](https://github.com/mikehear
 
 Now add the `nodejvm` directory to your path, or copy the contents to somewhere on your path.
 
+Make sure you've got GraalVM and set the location as either `JAVA_HOME` or `GRAALVM_PATH`. Or make sure
+its `bin` directory is on your path.
+
 Start your Java programs as normal but run `nodejvm` instead of `java`, e.g.
 
 `nodejvm -cp "libs/*.jar" my.main.Class arg1 arg2`
@@ -25,9 +28,27 @@ gradle build spinners-sample:shadowJar
 ../build/nodejvm/nodejvm -jar build/libs/spinners-sample-*-all.jar
 ```
 
-## From Gradle
+## From your own Gradle projects
 
-The easiest way is to adjust your JavaCompile tasks to run `nodejvm` instead of `java`:
+Firstly, add my Maven repository for the interop API JAR (this step will become obsolete soon as it'll be in JCenter):
+
+```
+import java.net.URI
+
+repositories {
+    maven {
+        url = URI("https://dl.bintray.com/mikehearn/open-source")
+    }
+}
+
+dependencies {
+    implementation("net.plan99:nodejvm:1.1")
+}
+```
+
+(these all use Kotlin DSL syntax)
+
+Then adjust your JavaCompile tasks to run `nodejvm` instead of `java`:
 
 ```
 tasks.withType<JavaExec> {
