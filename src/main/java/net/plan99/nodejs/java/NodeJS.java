@@ -1,6 +1,6 @@
-package net.plan99.nodejs;
+package net.plan99.nodejs.java;
 
-import net.plan99.nodejs.kotlin.NodeJSBlock;
+import net.plan99.nodejs.kotlin.NodeJSAPI;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.TypeLiteral;
 import org.graalvm.polyglot.Value;
@@ -17,9 +17,11 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.Supplier;
 
 /**
- * Provides an interface to the NodeJS runtime. You can only access the NodeJS world when running on the
- * event loop thread, which means you must use the various runJS methods on this class to get onto the
- * correct thread before using eval.
+ * Provides an interface to the NodeJS runtime for Java developers. You can only access the NodeJS world
+ * when running on the event loop thread, which means you must use the various runJS methods on this class
+ * to get onto the correct thread before using eval.
+ *
+ * @suppress
  */
 @SuppressWarnings("WeakerAccess")
 public class NodeJS {
@@ -159,6 +161,6 @@ public class NodeJS {
      * </ol>
      */
     public static <T> T castValue(Value value, TypeLiteral<T> typeLiteral) {
-        return NodeJSBlock.castValue(value, typeLiteral);
+        return NodeJSAPI.castValue(value, typeLiteral);
     }
 }

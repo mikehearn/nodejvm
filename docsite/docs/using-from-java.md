@@ -19,8 +19,7 @@ Evaluate JavaScript code with the `eval` static method. Before you can use it, y
 NodeJS main thread by providing a lambda to `NodeJS.runJS`. See below for more info on this.
 
 What you get back from `eval` is a GraalVM Polyglot `Value` class ([javadoc](http://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html)). 
-[Documentation for the Polyglot API is here](http://www.graalvm.org/sdk/javadoc/). Read about [types] to learn 
-how to convert `Value` to more usefully native types.  
+[Documentation for the Polyglot API is here](http://www.graalvm.org/sdk/javadoc/).
 
 There is also a `NodeJS.runJSAsync` method which returns a `CompletableFuture` with the result of the lambda, instead
 of waiting, and an `Executor` that executes jobs on the NodeJS thread.
@@ -40,12 +39,19 @@ in Java.
 
 It can be useful to convert `Value` to a more convenient type. Many such [type conversions](/types) are available.
 
-To benefit, you must unfortunately use a bit of boilerplate to ensure generics are preserved. Cast like this:
+The Polyglot API has conveniences for many of them on the `Value` object itself, like `Value.asBoolean()`, `Value.asString()`, 
+`Value.asLong()` etc.
+
+For objects, NodeJVM provides an extra bit of glue to make JavaBean style properties work. To benefit, you must 
+unfortunately use a little boilerplate to ensure generics are preserved. Cast like this:
 
 ```java
 MyInterface ora = NodeJS.castValue(v, new TypeLiteral<MyInterface>() {});
 ```
 
+If you passed a Java object into JavaScript and have now got it back again, use `Value.asHostObject()`
+to unwrap it.
+ 
 ## Bindings
 
 You will often want to put a Java object into the JavaScript environment. That's done using the Polyglot

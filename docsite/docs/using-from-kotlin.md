@@ -1,5 +1,7 @@
 # Using from Kotlin
 
+📚 **[Read the Kotlin API Docs](/kotlin-api/nodejs-interop/net.plan99.nodejs.kotlin/-node-j-s-a-p-i/index.html)**
+
 Kotlin provides many features that make it much more convenient and pleasant to work with NodeJS from the JVM.
 The API is available only inside a `nodejs { }` block. You may evaluate JavaScript when inside a `nodejs` block, like so:
 
@@ -21,6 +23,12 @@ nodejs {
 ```
 
 The `nodejs` block synchronises with the NodeJS event loop, thus making access to the JavaScript engine safe.
+
+Remember Kotlin supports **multi-line strings** using `"""`. This is extremely convenient for embedding
+JavaScript into Kotlin files. If the string is passed in via a simple dataflow (with no intermediate methods)
+then IntelliJ will properly code highlight and do auto-complete for the embedded JavaScript via the
+[language injection](/language-injection) feature! Just watch out that a pointless `.trimIndent()` doesn't
+sneak in there, which will break injection. 
 
 ## Values
 
@@ -49,7 +57,7 @@ So you can see how to use Kotlin's property access syntax in the same way you mi
 
 But usually it's easier and better to cast a `Value` to some other more native type. 
 Read about [type conversions](/types) to learn how what's possible. To cast, you can either just ensure the return
-value of `eval` is assigned to the correct type. Or, you can use `.cast<T>` on a `Value`, like
+value of `eval` is assigned to the correct type, or you can use `.cast<T>` on a `Value`, like
 this:
 
 ```kotlin
@@ -82,8 +90,9 @@ wouldn't be able to see it.
 
 ## Interfaces
 
-It's highly convenient to cast `Value` to interfaces. Here's how you can use the `ora` module that provides fancy
-spinners using the support for interface casting:
+It's highly convenient to cast `Value` to interfaces. NodeJVM adds some extra proxying on top of GraalVM Polyglot to
+make Kotlin (i.e. JavaBean) style properties map to JavaScript properties correctly. Here's how you can use 
+the `ora` module that provides fancy spinners using the support for interface casting:
 
 ```kotlin
 interface Ora {

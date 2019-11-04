@@ -30,4 +30,6 @@ Kotlin `val` and `var` map to JavaBean style methods under the hood, so they sho
 ## Automatic conversion from TypeScript
 
 There is a project called Dukat that is working on automatic conversion of TypeScript to Kotlin 
-declarations. Because Kotlin code can also be accessed from Java. 
+declarations. Because Kotlin code can also be accessed from Java, this would be also useful for
+Java developers. Dukat is still under heavy development and would need some small adjustments for
+NodeJVM, but it's an avenue for future work.

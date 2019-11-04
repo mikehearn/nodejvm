@@ -1,6 +1,6 @@
 package net.plan99.nodejs.sample.spinners.java;
 
-import net.plan99.nodejs.NodeJS;
+import net.plan99.nodejs.java.NodeJS;
 import org.graalvm.polyglot.TypeLiteral;
 import org.graalvm.polyglot.Value;
 

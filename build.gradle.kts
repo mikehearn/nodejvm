@@ -1,18 +1,22 @@
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.net.URL
 
 plugins {
     java
     kotlin("jvm") version "1.3.50"
     `maven-publish`
     id("com.jfrog.bintray") version "1.8.4"
+    id("org.jetbrains.dokka") version "0.10.0"
 }
 
 group = "net.plan99.nodejs"
-version = "1.0"
+version = "1.1"
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -113,4 +117,25 @@ bintray {
         }
     }
     setPublications("api")
+}
+
+tasks {
+    val dokka by getting(DokkaTask::class) {
+        outputFormat = "html"
+        outputDirectory = "$projectDir/docsite/docs/kotlin-api"
+        configuration {
+            jdkVersion = 8
+            externalDocumentationLink {
+                url = URL("https://www.graalvm.org/sdk/javadoc/")
+                packageListUrl = URL("https://www.graalvm.org/sdk/javadoc/package-list")
+            }
+            reportUndocumented = true
+
+            // Exclude the Java API.
+            perPackageOption {
+                prefix = "net.plan99.nodejs.java"
+                suppress = true
+            }
+        }
+    }
 }

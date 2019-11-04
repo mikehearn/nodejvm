@@ -2,7 +2,7 @@
 
 package net.plan99.nodejs.kotlin
 
-import net.plan99.nodejs.NodeJS
+import net.plan99.nodejs.java.NodeJS
 import org.graalvm.polyglot.TypeLiteral
 import org.graalvm.polyglot.Value
 import org.intellij.lang.annotations.Language
@@ -19,13 +19,13 @@ import kotlin.reflect.KProperty
  * Note that this function schedules the lambda onto the NodeJS event loop and waits for it to be executed. If Node
  * is busy, it'll block and wait for it.
  */
-fun <T> nodejs(body: NodeJSBlock.() -> T): T = NodeJS.runJS { body(NodeJSBlock()) }
+fun <T> nodejs(body: NodeJSAPI.() -> T): T = NodeJS.runJS { body(NodeJSAPI()) }
 
 /**
- * Defines various Kotlin helpers to make working with the JavaScript environment more pleasant. Intended to be used
- * inside a [nodejs] block.
+ * The API for working with the NodeJS world. Accessed by using a [nodejs] block: the methods on this class are in
+ * scope when inside the code block.
  */
-class NodeJSBlock internal constructor() {
+class NodeJSAPI internal constructor() {
     /**
      * Converts the [Value] to a JVM type [T] in the following way:
      *
@@ -37,7 +37,7 @@ class NodeJSBlock internal constructor() {
     inline fun <reified T> Value.cast(): T = castValue(this, object : TypeLiteral<T>() {})
 
     companion object {
-        /** @see Value.cast */
+        /** @suppress */
         @JvmStatic
         fun <T> castValue(value: Value, typeLiteral: TypeLiteral<T>): T {
             val clazz = typeLiteral.rawType
@@ -76,9 +76,13 @@ class NodeJSBlock internal constructor() {
 
     private val bindings = NodeJS.polyglotContext().polyglotBindings
 
-    /** Implementation for [bind]. The necessary operator functions are defined as extensions to allow for reified generics. */
+    /**
+     * Implementation for [bind]. The necessary operator functions are defined as extensions to allow for reified generics.
+     * @suppress
+     */
     class Binding<T>
 
+    /** @suppress */
     operator fun <T> Binding<T>.setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         // This rather ugly hack is required as we can't just insert the name directly,
         // we have to go via an intermediate 'bindings' map.
@@ -87,8 +91,10 @@ class NodeJSBlock internal constructor() {
         bindings.removeMember("__nodejvm_transfer")
     }
 
+    /** @suppress */
     inline operator fun <reified T> Binding<T>.getValue(thisRef: Any?, property: KProperty<*>): T = eval(property.name)
 
+    /** @suppress */
     inner class Binder<T>(private val default: T? = null) {
         operator fun provideDelegate(thisRef: Any?, prop: KProperty<*>): Binding<T> {
             val b = Binding<T>()
