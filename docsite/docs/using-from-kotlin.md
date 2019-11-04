@@ -1,6 +1,6 @@
 # Using from Kotlin
 
-📚 **[Read the Kotlin API Docs](/kotlin-api/nodejs-interop/net.plan99.nodejs.kotlin/-node-j-s-a-p-i/index.html)**
+📚 **[Read the Kotlin API Docs](kotlin-api/nodejs-interop/net.plan99.nodejs.kotlin/-node-j-s-a-p-i/index.html)**
 
 Kotlin provides many features that make it much more convenient and pleasant to work with NodeJS from the JVM.
 The API is available only inside a `nodejs { }` block. You may evaluate JavaScript when inside a `nodejs` block, like so:
