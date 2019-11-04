@@ -7,14 +7,28 @@ import org.graalvm.polyglot.Value;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.JarURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.Supplier;
+import java.util.jar.JarInputStream;
 
 /**
  * Provides an interface to the NodeJS runtime for Java developers. You can only access the NodeJS world
@@ -44,27 +58,72 @@ public class NodeJS {
     // Called from the boot.js file as part of NodeJVM startup, do not call.
     @SuppressWarnings("unused")
     @Deprecated
-    public static void boot(String entryPointName,
-                            LinkedBlockingDeque<Runnable> taskQueue,
+    public static void boot(LinkedBlockingDeque<Runnable> taskQueue,
                             Value evalFunction,
-                            String[] args) {
+                            String[] args) throws ClassNotFoundException, IOException {
+        try {
+            boot1(taskQueue, evalFunction, args);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    private static void boot1(LinkedBlockingDeque<Runnable> taskQueue, Value evalFunction, String[] args) throws ClassNotFoundException, IOException {
         assert linkage == null : "Don't call this function directly. Already started!";
         assert evalFunction.canExecute();
         NodeJS.linkage = new Linkage(taskQueue, evalFunction);
         Thread.currentThread().setName("NodeJS main thread");
+
+        if (args.length == 0) {
+            System.err.println("You must specify at least a class name, or -jar jarname.jar");
+            System.exit(1);
+        } else if (!args[0].equals("-jar")) {
+            Class<?> entryPoint = Class.forName(args[0]);
+            startJavaThread(entryPoint, Arrays.copyOfRange(args, 1, args.length));
+        } else {
+            File myJar = new File(args[1]);
+            final URL url = myJar.toURI().toURL();
+            String mainClassName = "";
+            try (InputStream stream = Files.newInputStream(Paths.get(args[1]), StandardOpenOption.READ)) {
+                JarInputStream jis = new JarInputStream(stream);
+                mainClassName = jis.getManifest().getMainAttributes().getValue("Main-Class");
+            }
+
+            if (mainClassName == null) {
+                System.err.println("JAR file does not have a Main-Class attribute, is not executable.");
+                System.exit(1);
+            }
+            // Use the parent classloader to forcibly toss out this version of the interop JAR, to avoid confusion
+            // later when there are two classloaders in play, BUT, holepunch this specific class and inner classes
+            // through so the state linked up from the bootstrap script is still here. In other words, this class is
+            // special, so don't give it dependencies outside the JDK.
+            ClassLoader thisClassLoader = NodeJS.class.getClassLoader();
+            URLClassLoader child = new URLClassLoader(new URL[] {url}, thisClassLoader.getParent()) {
+                @Override
+                protected Class<?> findClass(String name) throws ClassNotFoundException {
+                    if (name.startsWith(NodeJS.class.getName())) {
+                        return thisClassLoader.loadClass(name);
+                    } else
+                        return super.findClass(name);
+                }
+            };
+            Class<?> entryPoint = Class.forName(mainClassName, true, child);
+            startJavaThread(entryPoint, Arrays.copyOfRange(args, 2, args.length));
+        }
+    }
+
+    private static void startJavaThread(Class<?> entryPoint, String[] args) {
         Thread javaThread = new Thread(() -> {
             try {
-                Class<?> entryPoint = Class.forName(entryPointName);
                 Method main = entryPoint.getMethod("main", String[].class);
                 assert Modifier.isStatic(main.getModifiers());
                 main.invoke(null, new Object[] { args });
                 System.exit(0);
             } catch (NoSuchMethodException e) {
-                System.err.println("No main method found in " + entryPointName);
+                System.err.println("No main method found in " + entryPoint.getName());
             } catch (InvocationTargetException e) {
                 e.getCause().printStackTrace();
-            } catch (ClassNotFoundException e) {
-                System.err.println(String.format("Main class with name '%s' not found.", entryPointName));
             } catch (Throwable e) {
                 e.printStackTrace();
             }

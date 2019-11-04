@@ -4,6 +4,7 @@ plugins {
     java
     kotlin("jvm")
     application
+    id("com.github.johnrengelman.shadow") version("5.1.0")
 }
 
 group = "net.plan99.nodejs"

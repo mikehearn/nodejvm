@@ -39,44 +39,43 @@ fi
 # Mangle the command line arguments. We expect to receive a normal JVM command line
 # and want to convert it into a GraalJS node command line, which requires adding flags,
 # editing flag names, inserting options, etc.
-newargs=()
-i=0
-modifying=true
+export NODE_JVM_OPTIONS=""
 declare -a args
 args=( $@ )
 argCount=${#args[@]}
-while (( j < argCount )); do
-    arg="${args[j]}"
-    newarg="$arg"
+i=0
+while (( i < argCount )); do
+    arg="${args[i]}"
     case "$arg" in
-        --classpath|-cp|-classpath)
-           (( j++ ))
-           newargs[i]="--vm.cp=$interopJar:${args[j]}"
-           (( j++ ))
-           (( i++ ))
-           continue
-           ;;
-        --*) if $modifying; then newarg="--vm.${arg[@]:2}"; fi;;
-        -*) if $modifying; then newarg="--vm.${arg[@]:1}"; fi;;
-        *) if $modifying; then
-               modifying=false;
-               newarg="/dev/stdin $newarg";
-           fi;;
+        -cp|-classpath|--classpath)
+            NODE_JVM_CLASSPATH="${args[i+1]}"
+            (( i++ ))
+            ;;
+        --*|-*)
+            if [[ "$arg" == "-jar" ]]; then break; fi;
+            NODE_JVM_OPTIONS="$NODE_JVM_OPTIONS $arg"
+            ;;
+        *)
+           break;;
     esac
-    newargs[i]="$newarg"
     (( i++ ))
-    (( j++ ))
 done
+args=${args[@]:$i}
 
 # Make node look for modules in the executed-from directory in the same way
 # it would if run from the command line normally.
 export NODE_PATH=$PWD/node_modules
 
-# Now feed the boot.js script to the node binary. The quoted "EOF" here
+# Now feed the boot.js script to the node binary. The quoted 'EOF' here
 # doc string disables parsing and interpolation of the embedded script,
 # which is needed because backticks are meaningful to both JS and shell.
-cmd="$node --experimental-worker --jvm ${newargs[@]}"
-echo $cmd
-cat <<"EOF" | $cmd
+read -r -d '' BOOTJS <<'EOF'
 @bootjs@
 EOF
+
+export BOOTJS="$BOOTJS"
+export ARGS="$args"
+export NODE_JVM_CLASSPATH="$interopJar:$NODE_JVM_CLASSPATH"
+
+cmd="$node --experimental-worker --jvm -e eval(process.env['BOOTJS'])"
+exec $cmd

@@ -8,9 +8,26 @@ Start your Java programs as normal but run `nodejvm` instead of `java`, e.g.
 
 `nodejvm -cp "libs/*.jar" my.main.Class arg1 arg2`
 
+## Running the samples
+
+Check out the NodeJVM repository. Then try:
+
+```
+gradle dat-sample:run
+```
+
+It should join the DAT network and might print some peer infos, depending on your luck.
+
+Also try something a bit less Gradley:
+
+```
+gradle build spinners-sample:shadowJar
+../build/nodejvm/nodejvm -jar build/libs/spinners-sample-*-all.jar
+```
+
 ## From Gradle
 
-This is currently a bit awkward. The easiest way is to adjust your JavaCompile tasks to run `nodejvm` instead of `java`:
+The easiest way is to adjust your JavaCompile tasks to run `nodejvm` instead of `java`:
 
 ```
 tasks.withType<JavaExec> {
