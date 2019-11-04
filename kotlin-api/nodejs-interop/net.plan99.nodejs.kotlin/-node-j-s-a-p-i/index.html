@@ -1,0 +1,79 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>NodeJSAPI - nodejs-interop</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">nodejs-interop</a>&nbsp;/&nbsp;<a href="../index.html">net.plan99.nodejs.kotlin</a>&nbsp;/&nbsp;<a href="./index.html">NodeJSAPI</a><br/>
+<br/>
+<h1>NodeJSAPI</h1>
+<code><span class="keyword">class </span><span class="identifier">NodeJSAPI</span></code>
+<p>The API for working with the NodeJS world. Accessed by using a <a href="../nodejs.html">nodejs</a> block: the methods on this class are in
+scope when inside the code block.</p>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="as-value.html">asValue</a></h4>
+</td>
+<td>
+<p>Casts any object to being a JavaScript object.</p>
+<code><span class="keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">.</span><span class="identifier">asValue</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html"><span class="identifier">Value</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="bind.html">bind</a></h4>
+</td>
+<td>
+<p>Use this in property delegate syntax to access top level global variables in the NodeJS context. By declaring
+a variable as <code>var x: String by bind()</code> you can read and write the 'x' global variable in JavaScript world.</p>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">bind</span><span class="symbol">(</span><span class="identifier" id="net.plan99.nodejs.kotlin.NodeJSAPI$bind(net.plan99.nodejs.kotlin.NodeJSAPI.bind.T)/default">default</span><span class="symbol">:</span>&nbsp;<span class="identifier">T</span><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Binder</span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="cast.html">cast</a></h4>
+</td>
+<td>
+<p>Converts the <a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html">Value</a> to a JVM type <a href="cast.html#T">T</a> in the following way:</p>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html"><span class="identifier">Value</span></a><span class="symbol">.</span><span class="identifier">cast</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="eval.html">eval</a></h4>
+</td>
+<td>
+<p>Evaluates the given JavaScript string and casts the result to the desired JVM type. You can request a cast
+to interfaces that map to JS objects, collections, the Graal/Polyglot <a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html">Value</a> type, boxed primitives and more.</p>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">eval</span><span class="symbol">(</span><span class="identifier" id="net.plan99.nodejs.kotlin.NodeJSAPI$eval(kotlin.String)/javascript">javascript</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="get.html">get</a></h4>
+</td>
+<td>
+<p>Allows you to read JS properties of the given <a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html">Value</a> using Kotlin indexing syntax.</p>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html"><span class="identifier">Value</span></a><span class="symbol">.</span><span class="identifier">get</span><span class="symbol">(</span><span class="identifier" id="net.plan99.nodejs.kotlin.NodeJSAPI$get(org.graalvm.polyglot.Value, kotlin.String)/key">key</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code><br/>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html"><span class="identifier">Value</span></a><span class="symbol">.</span><span class="identifier">get</span><span class="symbol">(</span><span class="identifier" id="net.plan99.nodejs.kotlin.NodeJSAPI$get(org.graalvm.polyglot.Value, kotlin.String)/key">key</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html"><span class="identifier">Value</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="run.html">run</a></h4>
+</td>
+<td>
+<p>Evaluates the given JavaScript but throws away any result.</p>
+<code><span class="keyword">fun </span><span class="identifier">run</span><span class="symbol">(</span><span class="identifier" id="net.plan99.nodejs.kotlin.NodeJSAPI$run(kotlin.String)/javascript">javascript</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="set.html">set</a></h4>
+</td>
+<td>
+<p>Allows you to set JS properties of the given <a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html">Value</a> using Kotlin indexing syntax.</p>
+<code><span class="keyword">operator</span> <span class="keyword">fun </span><a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html"><span class="identifier">Value</span></a><span class="symbol">.</span><span class="identifier">set</span><span class="symbol">(</span><span class="identifier" id="net.plan99.nodejs.kotlin.NodeJSAPI$set(org.graalvm.polyglot.Value, kotlin.String, kotlin.Any)/key">key</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="net.plan99.nodejs.kotlin.NodeJSAPI$set(org.graalvm.polyglot.Value, kotlin.String, kotlin.Any)/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">?</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

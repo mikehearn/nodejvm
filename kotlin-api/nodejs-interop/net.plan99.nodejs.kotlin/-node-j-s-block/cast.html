@@ -1,0 +1,20 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>NodeJSBlock.cast - nodejs-interop</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">nodejs-interop</a>&nbsp;/&nbsp;<a href="../index.html">net.plan99.nodejs.kotlin</a>&nbsp;/&nbsp;<a href="index.html">NodeJSBlock</a>&nbsp;/&nbsp;<a href="./cast.html">cast</a><br/>
+<br/>
+<h1>cast</h1>
+<a name="net.plan99.nodejs.kotlin.NodeJSBlock$cast(org.graalvm.polyglot.Value)"></a>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="keyword">reified</span>&nbsp;<span class="identifier">T</span><span class="symbol">&gt;</span> <a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html"><span class="identifier">Value</span></a><span class="symbol">.</span><span class="identifier">cast</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code>
+<p>Converts the <a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html">Value</a> to a JVM type <a href="cast.html#T">T</a> in the following way:</p>
+<ol><li>If the type is an interface not annotated with <code>@FunctionalInterface</code> then a special proxy is returned that
+    knows how to map JavaBean style property methods on that interface to JavaScript properties.</li>
+<li>Otherwise, the <a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html">Value.as</a> method is used with a <a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/TypeLiteral.html">TypeLiteral</a> so generics are preserved and the best possible
+    translation occurs.</li>
+</ol>
+</BODY>
+</HTML>

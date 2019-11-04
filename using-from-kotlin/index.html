@@ -431,6 +431,7 @@
                 
                 
                 <h1 id="using-from-kotlin">Using from Kotlin<a class="headerlink" href="#using-from-kotlin" title="Permanent link">&para;</a></h1>
+<p>📚 <strong><a href="/kotlin-api/nodejs-interop/net.plan99.nodejs.kotlin/-node-j-s-a-p-i/index.html">Read the Kotlin API Docs</a></strong></p>
 <p>Kotlin provides many features that make it much more convenient and pleasant to work with NodeJS from the JVM.
 The API is available only inside a <code>nodejs { }</code> block. You may evaluate JavaScript when inside a <code>nodejs</code> block, like so:</p>
 <div class="codehilite"><pre><span></span><span class="k">val</span> <span class="py">i</span><span class="p">:</span> <span class="n">Int</span> <span class="p">=</span> <span class="n">nodejs</span> <span class="p">{</span>
@@ -449,6 +450,11 @@ of <code>eval</code> and stick it into a normal Kotlin variable most of the time
 
 
 <p>The <code>nodejs</code> block synchronises with the NodeJS event loop, thus making access to the JavaScript engine safe.</p>
+<p>Remember Kotlin supports <strong>multi-line strings</strong> using <code>"""</code>. This is extremely convenient for embedding
+JavaScript into Kotlin files. If the string is passed in via a simple dataflow (with no intermediate methods)
+then IntelliJ will properly code highlight and do auto-complete for the embedded JavaScript via the
+<a href="/language-injection">language injection</a> feature! Just watch out that a pointless <code>.trimIndent()</code> doesn't
+sneak in there, which will break injection. </p>
 <h2 id="values">Values<a class="headerlink" href="#values" title="Permanent link">&para;</a></h2>
 <p><code>Value</code> is GraalVM's generic variant type. It can be used to represent any JavaScript value. If you ask <code>eval</code> 
 for a <code>Value</code>, you can use Kotlin's indexing operators to treat it as a dictionary:</p>
@@ -472,7 +478,7 @@ for a <code>Value</code>, you can use Kotlin's indexing operators to treat it as
 <p>So you can see how to use Kotlin's property access syntax in the same way you might in JS itself. </p>
 <p>But usually it's easier and better to cast a <code>Value</code> to some other more native type. 
 Read about <a href="/types">type conversions</a> to learn how what's possible. To cast, you can either just ensure the return
-value of <code>eval</code> is assigned to the correct type. Or, you can use <code>.cast&lt;T&gt;</code> on a <code>Value</code>, like
+value of <code>eval</code> is assigned to the correct type, or you can use <code>.cast&lt;T&gt;</code> on a <code>Value</code>, like
 this:</p>
 <div class="codehilite"><pre><span></span><span class="k">val</span> <span class="py">str</span><span class="p">:</span> <span class="n">String</span> <span class="p">=</span> <span class="n">value</span><span class="p">.</span><span class="n">cast</span><span class="p">()</span>
 <span class="k">val</span> <span class="py">str2</span> <span class="p">=</span> <span class="n">value</span><span class="p">.</span><span class="n">cast</span><span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;()</span>
@@ -499,8 +505,9 @@ variable with the same name. </p>
 at the top level without <code>var</code>. That's why we run <code>x = 5</code> above and not <code>var x = 5</code>. If we had used <code>var</code> then Kotlin
 wouldn't be able to see it.</p>
 <h2 id="interfaces">Interfaces<a class="headerlink" href="#interfaces" title="Permanent link">&para;</a></h2>
-<p>It's highly convenient to cast <code>Value</code> to interfaces. Here's how you can use the <code>ora</code> module that provides fancy
-spinners using the support for interface casting:</p>
+<p>It's highly convenient to cast <code>Value</code> to interfaces. NodeJVM adds some extra proxying on top of GraalVM Polyglot to
+make Kotlin (i.e. JavaBean) style properties map to JavaScript properties correctly. Here's how you can use 
+the <code>ora</code> module that provides fancy spinners using the support for interface casting:</p>
 <div class="codehilite"><pre><span></span><span class="k">interface</span> <span class="nc">Ora</span> <span class="p">{</span>
     <span class="k">fun</span> <span class="nf">start</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span>
     <span class="k">fun</span> <span class="nf">info</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="n">String</span><span class="p">)</span>

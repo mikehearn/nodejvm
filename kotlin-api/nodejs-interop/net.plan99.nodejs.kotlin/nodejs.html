@@ -1,0 +1,19 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>nodejs - nodejs-interop</title>
+<link rel="stylesheet" href="../../style.css">
+</HEAD>
+<BODY>
+<a href="../index.html">nodejs-interop</a>&nbsp;/&nbsp;<a href="index.html">net.plan99.nodejs.kotlin</a>&nbsp;/&nbsp;<a href="./nodejs.html">nodejs</a><br/>
+<br/>
+<h1>nodejs</h1>
+<a name="net.plan99.nodejs.kotlin$nodejs(kotlin.Function1((net.plan99.nodejs.kotlin.NodeJSAPI, net.plan99.nodejs.kotlin.nodejs.T)))"></a>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span> <span class="identifier">nodejs</span><span class="symbol">(</span><span class="identifier" id="net.plan99.nodejs.kotlin$nodejs(kotlin.Function1((net.plan99.nodejs.kotlin.NodeJSAPI, net.plan99.nodejs.kotlin.nodejs.T)))/body">body</span><span class="symbol">:</span>&nbsp;<a href="-node-j-s-a-p-i/index.html"><span class="identifier">NodeJSAPI</span></a><span class="symbol">.</span><span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">T</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code>
+<p>Enters the NodeJS event loop thread and makes the JavaScript API available in scope. You can return JavaScript
+objects from a nodejs block, however, you can't access them again until you're back inside. Attempting to use
+them outside a nodejs block will trigger a threading violation exception.</p>
+<p>Note that this function schedules the lambda onto the NodeJS event loop and waits for it to be executed. If Node
+is busy, it'll block and wait for it.</p>
+</BODY>
+</HTML>

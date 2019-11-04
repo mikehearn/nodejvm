@@ -1,0 +1,110 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>NodeJS - nodejs-interop</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">nodejs-interop</a>&nbsp;/&nbsp;<a href="../index.html">net.plan99.nodejs</a>&nbsp;/&nbsp;<a href="./index.html">NodeJS</a><br/>
+<br/>
+<h1>NodeJS</h1>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">NodeJS</span></code>
+<p>Provides an interface to the NodeJS runtime for Java developers. You can only access the NodeJS world when running on the event loop thread, which means you must use the various runJS methods on this class to get onto the correct thread before using eval.</p>
+<p><strong>Suppress</strong><br/>
+</p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="-init-.html">&lt;init&gt;</a></h4>
+</td>
+<td>
+<p>Provides an interface to the NodeJS runtime for Java developers. You can only access the NodeJS world when running on the event loop thread, which means you must use the various runJS methods on this class to get onto the correct thread before using eval.</p>
+<code><span class="identifier">NodeJS</span><span class="symbol">(</span><span class="symbol">)</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="executor.html">executor</a></h4>
+</td>
+<td>
+<p>This <code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Executor.html">Executor</a></code> runs the given commands on the NodeJS event loop thread. The other utility functions on this class are all just utilities that delegate to this executor.</p>
+<code><span class="keyword">static</span> <span class="keyword">var </span><span class="identifier">executor</span><span class="symbol">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Executor.html"><span class="identifier">Executor</span></a><span class="symbol">!</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<h4><a href="boot.html">boot</a></h4>
+</td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">static</span> <span class="keyword">fun </span><s><span class="identifier">boot</span></s><span class="symbol">(</span><span class="identifier" id="net.plan99.nodejs.java.NodeJS$boot(kotlin.String, java.util.concurrent.LinkedBlockingDeque((java.lang.Runnable)), org.graalvm.polyglot.Value, kotlin.Array((kotlin.String)))/entryPointName">entryPointName</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">!</span><span class="symbol">, </span><span class="identifier" id="net.plan99.nodejs.java.NodeJS$boot(kotlin.String, java.util.concurrent.LinkedBlockingDeque((java.lang.Runnable)), org.graalvm.polyglot.Value, kotlin.Array((kotlin.String)))/taskQueue">taskQueue</span><span class="symbol">:</span>&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/LinkedBlockingDeque.html"><span class="identifier">LinkedBlockingDeque</span></a><span class="symbol">&lt;</span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Runnable.html"><span class="identifier">Runnable</span></a><span class="symbol">!</span><span class="symbol">&gt;</span><span class="symbol">!</span><span class="symbol">, </span><span class="identifier" id="net.plan99.nodejs.java.NodeJS$boot(kotlin.String, java.util.concurrent.LinkedBlockingDeque((java.lang.Runnable)), org.graalvm.polyglot.Value, kotlin.Array((kotlin.String)))/evalFunction">evalFunction</span><span class="symbol">:</span>&nbsp;<a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html"><span class="identifier">Value</span></a><span class="symbol">!</span><span class="symbol">, </span><span class="identifier" id="net.plan99.nodejs.java.NodeJS$boot(kotlin.String, java.util.concurrent.LinkedBlockingDeque((java.lang.Runnable)), org.graalvm.polyglot.Value, kotlin.Array((kotlin.String)))/args">args</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html"><span class="identifier">Array</span></a><span class="symbol">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">!</span><span class="symbol">&gt;</span><span class="symbol">!</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="cast-value.html">castValue</a></h4>
+</td>
+<td>
+<p>Converts the <code><a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html">Value</a></code> to a JVM type in the following way:</p>
+<code><span class="keyword">open</span> <span class="keyword">static</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">!</span><span class="symbol">&gt;</span> <span class="identifier">castValue</span><span class="symbol">(</span><span class="identifier" id="net.plan99.nodejs.java.NodeJS$castValue(org.graalvm.polyglot.Value, org.graalvm.polyglot.TypeLiteral((net.plan99.nodejs.java.NodeJS.castValue.T)))/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html"><span class="identifier">Value</span></a><span class="symbol">!</span><span class="symbol">, </span><span class="identifier" id="net.plan99.nodejs.java.NodeJS$castValue(org.graalvm.polyglot.Value, org.graalvm.polyglot.TypeLiteral((net.plan99.nodejs.java.NodeJS.castValue.T)))/typeLiteral">typeLiteral</span><span class="symbol">:</span>&nbsp;<a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/TypeLiteral.html"><span class="identifier">TypeLiteral</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">!</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="check-on-main-node-thread.html">checkOnMainNodeThread</a></h4>
+</td>
+<td>
+<p>Throws <code><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalStateException.html">IllegalStateException</a></code> if you aren't on the NodeJS main thread.</p>
+<code><span class="keyword">open</span> <span class="keyword">static</span> <span class="keyword">fun </span><span class="identifier">checkOnMainNodeThread</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html"><span class="identifier">Unit</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="eval.html">eval</a></h4>
+</td>
+<td>
+<p>Evaluates the given string and returns a generic <code><a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html">Value</a></code> object representing the result, that can then be converted into more useful forms. Note that you must be on the NodeJS thread for this to work (see <code><a href="run-j-s.html">#runJS(Supplier)</a></code> for how to do this).</p>
+<code><span class="keyword">open</span> <span class="keyword">static</span> <span class="keyword">fun </span><span class="identifier">eval</span><span class="symbol">(</span><span class="identifier" id="net.plan99.nodejs.java.NodeJS$eval(kotlin.String)/js">js</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">!</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html"><span class="identifier">Value</span></a><span class="symbol">!</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="is-on-main-node-thread.html">isOnMainNodeThread</a></h4>
+</td>
+<td>
+<p>Returns true if executing within the main NodeJS thread. Note: does NOT return true if you are executing on some other worker you created yourself.</p>
+<code><span class="keyword">open</span> <span class="keyword">static</span> <span class="keyword">fun </span><span class="identifier">isOnMainNodeThread</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="polyglot-context.html">polyglotContext</a></h4>
+</td>
+<td>
+<p>Returns the <code><a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Context.html">Context</a></code> for the NodeJS main thread.</p>
+<code><span class="keyword">open</span> <span class="keyword">static</span> <span class="keyword">fun </span><span class="identifier">polyglotContext</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Context.html"><span class="identifier">Context</span></a><span class="symbol">!</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="run-j-s.html">runJS</a></h4>
+</td>
+<td>
+<p>Runs the given <code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html">Supplier</a></code> on the NodeJS thread, blocks until execution has been performed and returns the result that was computed.</p>
+<code><span class="keyword">open</span> <span class="keyword">static</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">!</span><span class="symbol">&gt;</span> <span class="identifier">runJS</span><span class="symbol">(</span><span class="identifier" id="net.plan99.nodejs.java.NodeJS$runJS(java.util.function.Supplier((net.plan99.nodejs.java.NodeJS.runJS.T)))/callable">callable</span><span class="symbol">:</span>&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html"><span class="identifier">Supplier</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">!</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code></td>
+</tr>
+<tr>
+<td>
+<h4><a href="run-j-s-async.html">runJSAsync</a></h4>
+</td>
+<td>
+<p>Schedules execution of the given <code><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html">Supplier</a></code> onto the NodeJS thread, and returns a future that will complete when it's been run.</p>
+<code><span class="keyword">open</span> <span class="keyword">static</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">!</span><span class="symbol">&gt;</span> <span class="identifier">runJSAsync</span><span class="symbol">(</span><span class="identifier" id="net.plan99.nodejs.java.NodeJS$runJSAsync(java.util.function.Supplier((net.plan99.nodejs.java.NodeJS.runJSAsync.T)))/callable">callable</span><span class="symbol">:</span>&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Supplier.html"><span class="identifier">Supplier</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">!</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html"><span class="identifier">CompletableFuture</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">!</span></code></td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

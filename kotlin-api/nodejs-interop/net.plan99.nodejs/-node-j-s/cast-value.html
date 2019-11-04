@@ -1,0 +1,19 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>NodeJS.castValue - nodejs-interop</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">nodejs-interop</a>&nbsp;/&nbsp;<a href="../index.html">net.plan99.nodejs</a>&nbsp;/&nbsp;<a href="index.html">NodeJS</a>&nbsp;/&nbsp;<a href="./cast-value.html">castValue</a><br/>
+<br/>
+<h1>castValue</h1>
+<a name="net.plan99.nodejs.java.NodeJS$castValue(org.graalvm.polyglot.Value, org.graalvm.polyglot.TypeLiteral((net.plan99.nodejs.java.NodeJS.castValue.T)))"></a>
+<code><span class="keyword">open</span> <span class="keyword">static</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">T</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html"><span class="identifier">Any</span></a><span class="symbol">!</span><span class="symbol">&gt;</span> <span class="identifier">castValue</span><span class="symbol">(</span><span class="identifier" id="net.plan99.nodejs.java.NodeJS$castValue(org.graalvm.polyglot.Value, org.graalvm.polyglot.TypeLiteral((net.plan99.nodejs.java.NodeJS.castValue.T)))/value">value</span><span class="symbol">:</span>&nbsp;<a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html"><span class="identifier">Value</span></a><span class="symbol">!</span><span class="symbol">, </span><span class="identifier" id="net.plan99.nodejs.java.NodeJS$castValue(org.graalvm.polyglot.Value, org.graalvm.polyglot.TypeLiteral((net.plan99.nodejs.java.NodeJS.castValue.T)))/typeLiteral">typeLiteral</span><span class="symbol">:</span>&nbsp;<a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/TypeLiteral.html"><span class="identifier">TypeLiteral</span></a><span class="symbol">&lt;</span><span class="identifier">T</span><span class="symbol">&gt;</span><span class="symbol">!</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">T</span></code>
+<p>Converts the <code><a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html">Value</a></code> to a JVM type in the following way:</p>
+<p> </p>
+<ol> <li> If the type is an interface not annotated with <code>@FunctionalInterface</code> then a special proxy is returned that knows how to map JavaBean style property methods on that interface to JavaScript properties.</li>
+ <li> Otherwise, the <code><a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html#as(java.lang.Class<T>)">Value#as</a></code> method is used with the <code><a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/TypeLiteral.html">TypeLiteral</a></code> so generics are preserved and the best possible translation occurs.</li>
+ </ol>
+</BODY>
+</HTML>

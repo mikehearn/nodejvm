@@ -420,8 +420,7 @@
 <p>Evaluate JavaScript code with the <code>eval</code> static method. Before you can use it, you need to get yourself onto the
 NodeJS main thread by providing a lambda to <code>NodeJS.runJS</code>. See below for more info on this.</p>
 <p>What you get back from <code>eval</code> is a GraalVM Polyglot <code>Value</code> class (<a href="http://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html">javadoc</a>). 
-<a href="http://www.graalvm.org/sdk/javadoc/">Documentation for the Polyglot API is here</a>. Read about [types] to learn 
-how to convert <code>Value</code> to more usefully native types.  </p>
+<a href="http://www.graalvm.org/sdk/javadoc/">Documentation for the Polyglot API is here</a>.</p>
 <p>There is also a <code>NodeJS.runJSAsync</code> method which returns a <code>CompletableFuture</code> with the result of the lambda, instead
 of waiting, and an <code>Executor</code> that executes jobs on the NodeJS thread.</p>
 <p>The executor can be useful if you don't want to return anything from the JS code:</p>
@@ -435,11 +434,16 @@ of waiting, and an <code>Executor</code> that executes jobs on the NodeJS thread
 in Java.</p>
 <h2 id="casting">Casting<a class="headerlink" href="#casting" title="Permanent link">&para;</a></h2>
 <p>It can be useful to convert <code>Value</code> to a more convenient type. Many such <a href="/types">type conversions</a> are available.</p>
-<p>To benefit, you must unfortunately use a bit of boilerplate to ensure generics are preserved. Cast like this:</p>
+<p>The Polyglot API has conveniences for many of them on the <code>Value</code> object itself, like <code>Value.asBoolean()</code>, <code>Value.asString()</code>, 
+<code>Value.asLong()</code> etc.</p>
+<p>For objects, NodeJVM provides an extra bit of glue to make JavaBean style properties work. To benefit, you must 
+unfortunately use a little boilerplate to ensure generics are preserved. Cast like this:</p>
 <div class="codehilite"><pre><span></span><span class="n">MyInterface</span> <span class="n">ora</span> <span class="o">=</span> <span class="n">NodeJS</span><span class="o">.</span><span class="na">castValue</span><span class="o">(</span><span class="n">v</span><span class="o">,</span> <span class="k">new</span> <span class="n">TypeLiteral</span><span class="o">&lt;</span><span class="n">MyInterface</span><span class="o">&gt;()</span> <span class="o">{});</span>
 </pre></div>
 
 
+<p>If you passed a Java object into JavaScript and have now got it back again, use <code>Value.asHostObject()</code>
+to unwrap it.</p>
 <h2 id="bindings">Bindings<a class="headerlink" href="#bindings" title="Permanent link">&para;</a></h2>
 <p>You will often want to put a Java object into the JavaScript environment. That's done using the Polyglot
 bindings API. The bindings are a string to object map which acts as a kind of transfer area. You insert

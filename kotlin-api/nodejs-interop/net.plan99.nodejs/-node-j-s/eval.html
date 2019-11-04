@@ -1,0 +1,18 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>NodeJS.eval - nodejs-interop</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">nodejs-interop</a>&nbsp;/&nbsp;<a href="../index.html">net.plan99.nodejs</a>&nbsp;/&nbsp;<a href="index.html">NodeJS</a>&nbsp;/&nbsp;<a href="./eval.html">eval</a><br/>
+<br/>
+<h1>eval</h1>
+<a name="net.plan99.nodejs.java.NodeJS$eval(kotlin.String)"></a>
+<code><span class="keyword">open</span> <span class="keyword">static</span> <span class="keyword">fun </span><span class="identifier">eval</span><span class="symbol">(</span><span class="identifier" id="net.plan99.nodejs.java.NodeJS$eval(kotlin.String)/js">js</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">!</span><span class="symbol">)</span><span class="symbol">: </span><a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html"><span class="identifier">Value</span></a><span class="symbol">!</span></code>
+<p>Evaluates the given string and returns a generic <code><a href="https://www.graalvm.org/sdk/javadoc/org/graalvm/polyglot/Value.html">Value</a></code> object representing the result, that can then be converted into more useful forms. Note that you must be on the NodeJS thread for this to work (see <code><a href="run-j-s.html">#runJS(Supplier)</a></code> for how to do this).</p>
+<h3>Exceptions</h3>
+<p><a name="IllegalStateException"></a>
+<code>IllegalStateException</code> - if you're not on the NodeJS thread.</p>
+</BODY>
+</HTML>
