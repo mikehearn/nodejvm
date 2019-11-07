@@ -1,0 +1,8 @@
+{
+  "name": "spinners-sample",
+  "version": "1.0.0",
+  "dependencies": {
+    "@types/ora": "4.0.2",
+    "ora": "^4.0.2"
+  }
+}

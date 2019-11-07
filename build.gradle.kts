@@ -1,16 +1,22 @@
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.net.URL
 
 plugins {
     java
-    kotlin("jvm") version "1.3.20"
+    kotlin("jvm") version "1.3.50"
+    `maven-publish`
+    id("com.jfrog.bintray") version "1.8.4"
+    id("org.jetbrains.dokka") version "0.10.0"
 }
 
 group = "net.plan99.nodejs"
-version = "1.0"
+version = "1.1"
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -25,6 +31,11 @@ configure<JavaPluginConvention> {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+tasks.withType<JavaCompile> {
+    // Not strictly needed but it's nice for Java users to always have parameter reflection info.
+    options.compilerArgs.add("-parameters")
 }
 
 val genNodeJVMScript = task<Copy>("genNodeJVMScript") {
@@ -43,3 +54,88 @@ val copyInteropJar = task<Copy>("copyInteropJar") {
 }
 
 tasks["build"].dependsOn(genNodeJVMScript, copyInteropJar)
+
+tasks.register<Jar>("sourcesJar") {
+    from(sourceSets.main.get().allJava)
+    archiveClassifier.set("sources")
+}
+
+tasks.register<Jar>("javadocJar") {
+    from(tasks.javadoc)
+    archiveClassifier.set("javadoc")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("api") {
+            from(components["java"])
+            groupId = "net.plan99"
+            artifactId = "nodejvm"
+
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
+
+            pom {
+                name.set("NodeJVM")
+                description.set("Easier NodeJS interop for GraalVM")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("mike")
+                        name.set("Mike Hearn")
+                        email.set("mike@plan99.net")
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url = uri("$buildDir/repo")
+        }
+    }
+}
+
+bintray {
+    user = "mikehearn"
+    key = System.getenv("BINTRAY_KEY")
+    pkg.apply {
+        repo = "open-source"
+        name = "nodejvm"
+        setLicenses("Apache-2.0")
+        vcsUrl = "https://github.com/mikehearn/nodejvm.git"
+        version.apply {
+            name = project.version.toString()
+            desc = "NodeJS interop for GraalVM"
+        }
+    }
+    setPublications("api")
+}
+
+tasks {
+    val dokka by getting(DokkaTask::class) {
+        outputFormat = "html"
+        outputDirectory = "$projectDir/docsite/docs/kotlin-api"
+        configuration {
+            jdkVersion = 8
+            externalDocumentationLink {
+                url = URL("https://www.graalvm.org/sdk/javadoc/")
+                packageListUrl = URL("https://www.graalvm.org/sdk/javadoc/package-list")
+            }
+            reportUndocumented = true
+
+            // Exclude the Java API.
+            perPackageOption {
+                prefix = "net.plan99.nodejs.java"
+                suppress = true
+            }
+        }
+    }
+}

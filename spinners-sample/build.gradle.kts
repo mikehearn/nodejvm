@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.net.URI
 
 plugins {
     java
@@ -12,23 +11,16 @@ group = "net.plan99.nodejs"
 version = "1.0"
 
 application {
-    mainClassName = "net.plan99.nodejs.sample.DatExplorer"
+    mainClassName = "net.plan99.nodejs.sample.spinners.SpinnerDemoKt"
 }
 
 repositories {
     mavenCentral()
-    jcenter()
-    maven {
-        url = URI("https://dl.bintray.com/mikehearn/open-source")
-    }
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation(rootProject)
-
-    // In your programs, you'd write something like:
-    // implementation("net.plan99:nodejvm:1.1")
+    implementation(rootProject)   // This would be:   implementation("net.plan99.nodejs:nodejs-interop:1.0") in a real project
 }
 
 configure<JavaPluginConvention> {

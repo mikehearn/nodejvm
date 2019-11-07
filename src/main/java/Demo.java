@@ -1,4 +1,4 @@
-import net.plan99.nodejs.NodeJS;
+import net.plan99.nodejs.java.NodeJS;
 
 public class Demo {
     public static void main(String[] args) {

@@ -1,10 +1,3 @@
-const javaEntryPoint = process.argv[2];
-
-if (javaEntryPoint === undefined) {
-    console.error("You must provide the main class name as the first argument.");
-    process.exit(1);
-}
-
 // Set up a task queue that we'll proxy onto the NodeJS main thread.
 //
 // We have to do it this way because NodeJS/V8 are not thread safe,
@@ -37,11 +30,6 @@ worker.on('message', (callback) => {
     }
 });
 
-// We need this wrapper because GraalJS barfs if we try to call eval() directly from Java context, it assumes
+// We need this wrapper around eval because GraalJS barfs if we try to call eval() directly from Java context, it assumes
 // it will only ever be called from JS context.
-let evalWrapper = function(str)  {
-    return eval(str);
-};
-
-// Now pass control to the Java side.
-Java.type('net.plan99.nodejs.NodeJS').boot(javaEntryPoint, javaToJSQueue, evalWrapper, process.argv.slice(2));
+Java.type('net.plan99.nodejs.java.NodeJS').boot(javaToJSQueue, function(str)  { return eval(str); }, process.env['ARGS'].split(" "));
