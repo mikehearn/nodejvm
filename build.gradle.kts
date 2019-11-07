@@ -16,7 +16,7 @@ repositories {
 dependencies {
     compileOnly("org.jetbrains:annotations:16.0.2")
     compileOnly(kotlin("stdlib-jdk8"))
-    api("org.graalvm.sdk:graal-sdk:1.0.0-rc12")
+    api("org.graalvm.sdk:graal-sdk:19.2.0.1")
 }
 
 configure<JavaPluginConvention> {
