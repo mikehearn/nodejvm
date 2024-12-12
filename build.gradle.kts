@@ -1,36 +1,28 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.dokka.plugability.configuration
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.net.URI
 import java.net.URL
 
 plugins {
     java
-    kotlin("jvm") version "1.3.50"
+    kotlin("jvm") version "2.1.0"
     `maven-publish`
-    id("com.jfrog.bintray") version "1.8.4"
-    id("org.jetbrains.dokka") version "0.10.0"
+    id("org.jetbrains.dokka") version "1.9.20"
 }
 
 group = "net.plan99.nodejs"
-version = "1.1"
+version = "1.2"
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
     compileOnly("org.jetbrains:annotations:16.0.2")
     compileOnly(kotlin("stdlib-jdk8"))
-    api("org.graalvm.sdk:graal-sdk:19.2.0.1")
-}
-
-configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    api("org.graalvm.polyglot:polyglot:24.1.1")
 }
 
 tasks.withType<JavaCompile> {
@@ -42,15 +34,17 @@ val genNodeJVMScript = task<Copy>("genNodeJVMScript") {
     val bootjs = "src/main/resources/boot.js"
     inputs.file(bootjs)
     from("src/main/resources/nodejvm")
-    into("$buildDir/nodejvm")
+    into(layout.buildDirectory.dir("nodejvm"))
     filter(ReplaceTokens::class, mapOf("tokens" to mapOf("bootjs" to file(bootjs).readText())))
-    fileMode = 0x000001ed  // rwxr-xr-x permissions, kotlin doesn't support octal literals
+    filePermissions {
+        unix(0x000001ed)  // rwxr-xr-x permissions, kotlin doesn't support octal literals
+    }
 }
 
 val copyInteropJar = task<Copy>("copyInteropJar") {
     dependsOn(":jar")
-    from("$buildDir/libs/nodejs-interop-$version.jar")
-    into("$buildDir/nodejvm")
+    from(layout.buildDirectory.file("libs/nodejs-interop-$version.jar"))
+    into(layout.buildDirectory.dir("nodejvm"))
 }
 
 tasks["build"].dependsOn(genNodeJVMScript, copyInteropJar)
@@ -98,44 +92,24 @@ publishing {
     repositories {
         maven {
             // change to point to your repo, e.g. http://my.org/repo
-            url = uri("$buildDir/repo")
+            url = uri(layout.buildDirectory.dir("repo"))
         }
     }
 }
 
-bintray {
-    user = "mikehearn"
-    key = System.getenv("BINTRAY_KEY")
-    pkg.apply {
-        repo = "open-source"
-        name = "nodejvm"
-        setLicenses("Apache-2.0")
-        vcsUrl = "https://github.com/mikehearn/nodejvm.git"
-        version.apply {
-            name = project.version.toString()
-            desc = "NodeJS interop for GraalVM"
+tasks.dokkaHtml {
+    outputDirectory.set(layout.projectDirectory.dir("docsite/docs/kotlin-api"))
+    dokkaSourceSets.configureEach {
+        externalDocumentationLink {
+            url = URI("https://www.graalvm.org/sdk/javadoc/").toURL()
+            packageListUrl = URI("https://www.graalvm.org/sdk/javadoc/package-list").toURL()
         }
-    }
-    setPublications("api")
-}
+        reportUndocumented = true
 
-tasks {
-    val dokka by getting(DokkaTask::class) {
-        outputFormat = "html"
-        outputDirectory = "$projectDir/docsite/docs/kotlin-api"
-        configuration {
-            jdkVersion = 8
-            externalDocumentationLink {
-                url = URL("https://www.graalvm.org/sdk/javadoc/")
-                packageListUrl = URL("https://www.graalvm.org/sdk/javadoc/package-list")
-            }
-            reportUndocumented = true
-
-            // Exclude the Java API.
-            perPackageOption {
-                prefix = "net.plan99.nodejs.java"
-                suppress = true
-            }
+        // Exclude the Java API.
+        perPackageOption {
+            matchingRegex.set("net\\.plan99\\.nodejs\\.java.*")
+            suppress = true
         }
     }
 }

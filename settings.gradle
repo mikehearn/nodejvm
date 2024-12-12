@@ -1,12 +1,8 @@
 pluginManagement {
     repositories {
-        maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
         mavenCentral()
         maven { url 'https://plugins.gradle.org/m2/' }
-        jcenter()
     }
 }
 rootProject.name = 'nodejs-interop'
-include 'dat-sample'
 include 'spinners-sample'
-
