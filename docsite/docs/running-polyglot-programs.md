@@ -60,10 +60,17 @@ This requires `nodejvm` to be on your PATH and JAVA_HOME to be pointed at GraalV
 There's no support for automatically downloading NodeJVM or Graal itself at this
 time.
 
-If you use the `application` plugin to generate startup scripts, then at the moment
-you will have to edit the script by hand because it really wants `nodejvm` to be
-called `java`. Alternatively you could symlink `nodejvm` to be named `java` and
-put that on your PATH so it overrides the default Java install, but again, this
-would be up to your users to do.
+## Packaging
 
-This is an area of focus for future improvement.
+If you use the `application` plugin to generate startup scripts, then you will need a bit of extra code to edit the
+script as it really wants the Java runner to be called `java` and not anything else. Try adding this code to your
+build script (you may need to run `gradle installDist --rerun-tasks` after):
+
+```kotlin
+tasks.startScripts {
+    val script = outputDir!!.resolve("doppelganger")
+    doLast {
+        script.writeText(script.readText().replace("JAVACMD=java", "JAVACMD=nodejvm"))
+    }
+}
+```

@@ -2,6 +2,7 @@ package net.plan99.nodejs.java;
 
 import net.plan99.nodejs.kotlin.NodeJSAPI;
 import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.TypeLiteral;
 import org.graalvm.polyglot.Value;
 import org.intellij.lang.annotations.Language;
@@ -23,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.jar.JarInputStream;
 
@@ -34,14 +36,16 @@ import java.util.jar.JarInputStream;
 @SuppressWarnings("WeakerAccess")
 public class NodeJS {
     private static class Linkage {
-        LinkedBlockingDeque<Runnable> taskQueue;
-        Value evalFunction;
-        Thread nodeJSThread;
-        Context ctx;
+        final Value throwFunction;
+        final LinkedBlockingDeque<Runnable> taskQueue;
+        final Value evalFunction;
+        final Thread nodeJSThread;
+        final Context ctx;
 
-        Linkage(LinkedBlockingDeque<Runnable> taskQueue, Value evalFunction) {
+        Linkage(LinkedBlockingDeque<Runnable> taskQueue, Value evalFunction, Value throwFunction) {
             this.taskQueue = taskQueue;
             this.evalFunction = evalFunction;
+            this.throwFunction = throwFunction;
             this.nodeJSThread = Thread.currentThread();
             this.ctx = Context.getCurrent();
         }
@@ -54,19 +58,20 @@ public class NodeJS {
     @Deprecated
     public static void boot(LinkedBlockingDeque<Runnable> taskQueue,
                             Value evalFunction,
-                            String[] args) throws ClassNotFoundException, IOException {
+                            Value throwFunction,
+                            String[] args) {
         try {
-            boot1(taskQueue, evalFunction, args);
+            boot1(taskQueue, evalFunction, throwFunction, args);
         } catch (Throwable e) {
             e.printStackTrace();
             System.exit(1);
         }
     }
 
-    private static void boot1(LinkedBlockingDeque<Runnable> taskQueue, Value evalFunction, String[] args) throws ClassNotFoundException, IOException {
+    private static void boot1(LinkedBlockingDeque<Runnable> taskQueue, Value evalFunction, Value throwFunction, String[] args) throws ClassNotFoundException, IOException {
         assert linkage == null : "Don't call this function directly. Already started!";
         assert evalFunction.canExecute();
-        NodeJS.linkage = new Linkage(taskQueue, evalFunction);
+        NodeJS.linkage = new Linkage(taskQueue, evalFunction, throwFunction);
         Thread.currentThread().setName("NodeJS main thread");
 
         if (args.length == 0) {
@@ -78,7 +83,7 @@ public class NodeJS {
         } else {
             File myJar = new File(args[1]);
             final URL url = myJar.toURI().toURL();
-            String mainClassName = "";
+            String mainClassName;
             try (InputStream stream = Files.newInputStream(Paths.get(args[1]), StandardOpenOption.READ)) {
                 JarInputStream jis = new JarInputStream(stream);
                 mainClassName = jis.getManifest().getMainAttributes().getValue("Main-Class");
@@ -165,6 +170,33 @@ public class NodeJS {
      */
     public static <T> CompletableFuture<T> runJSAsync(Supplier<T> callable) {
         return CompletableFuture.supplyAsync(callable, executor);
+    }
+
+    /**
+     * Returns a future that completes when the given promise completes.
+     *
+     * @param promise Something that is 'thenable', i.e. conforms to the JS promise protocol.
+     * @return A future that completes when the 'then' handler is invoked by the promise.
+     */
+    public static CompletableFuture<Value> futureFromPromise(Value promise) {
+        var f = new CompletableFuture<Value>();
+        promise.invokeMember(
+                "then",
+                (Consumer<Object>) it -> {
+                    //noinspection resource
+                    f.complete(NodeJS.polyglotContext().asValue(it));
+                },
+                (Consumer<Object>) it -> {
+                    System.err.println("Promise is resolving with error:\n" + it);
+                    try {
+                        NodeJS.linkage.throwFunction.execute(it);
+                    } catch (PolyglotException ex) {
+                        ex.printStackTrace();
+                        f.completeExceptionally(ex);
+                    }
+                }
+        );
+        return f;
     }
 
     /**

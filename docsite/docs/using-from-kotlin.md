@@ -126,6 +126,9 @@ fun main() {
 }
 ``` 
 
+If a method in such an interface is defined to return `CompletableFuture<Value>` then the method is expected to return
+a promise, and the two will be linked. The type parameter cannot currently be casted automatically, as it's erased.
+
 ## Callbacks and lambdas
 
 You unfortunately cannot pass Kotlin lambdas straight into JavaScript due to [KT-30107](https://youtrack.jetbrains.com/issue/KT-301070).
