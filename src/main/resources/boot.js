@@ -11,9 +11,7 @@
 // the queue. Then it'll transmit them to the main event loop for
 // execution.
 let javaToJSQueue = new java.util.concurrent.LinkedBlockingDeque();
-const {
-    Worker, isMainThread, parentPort, workerData
-} = require('worker_threads');
+const { Worker } = require('worker_threads');
 
 let worker = new Worker(`
     const { workerData, parentPort } = require('worker_threads');
@@ -32,4 +30,9 @@ worker.on('message', (callback) => {
 
 // We need this wrapper around eval because GraalJS barfs if we try to call eval() directly from Java context, it assumes
 // it will only ever be called from JS context.
-Java.type('net.plan99.nodejs.java.NodeJS').boot(javaToJSQueue, function(str)  { return eval(str); }, process.env['ARGS'].split(" "));
+Java.type('net.plan99.nodejs.java.NodeJS').boot(
+    javaToJSQueue,
+    function(str) { return eval(str); },
+    function(err) { throw err; },
+    process.env['ARGS'].split(" ")
+);
