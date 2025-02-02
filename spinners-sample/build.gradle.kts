@@ -17,7 +17,9 @@ application {
 repositories {
     mavenCentral()
 }
-
+kotlin {
+    jvmToolchain(21)
+}
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(rootProject)   // This would be:   implementation("net.plan99.nodejs:nodejs-interop:1.0") in a real project

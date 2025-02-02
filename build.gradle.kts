@@ -7,7 +7,7 @@ import java.net.URL
 
 plugins {
     java
-    kotlin("jvm") version "2.1.0"
+    kotlin("jvm") version "1.9.25"
     `maven-publish`
     id("org.jetbrains.dokka") version "1.9.20"
 }
@@ -25,6 +25,16 @@ dependencies {
     api("org.graalvm.polyglot:polyglot:24.1.1")
 }
 
+kotlin {
+    jvmToolchain(21)
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
 tasks.withType<JavaCompile> {
     // Not strictly needed but it's nice for Java users to always have parameter reflection info.
     options.compilerArgs.add("-parameters")
@@ -35,7 +45,12 @@ val genNodeJVMScript = task<Copy>("genNodeJVMScript") {
     inputs.file(bootjs)
     from("src/main/resources/nodejvm")
     into(layout.buildDirectory.dir("nodejvm"))
-    filter(ReplaceTokens::class, mapOf("tokens" to mapOf("bootjs" to file(bootjs).readText())))
+    filter(ReplaceTokens::class, mapOf(
+        "tokens" to mapOf(
+            "bootjs" to file(bootjs).readText(),
+            "ver" to version.toString()
+        )
+    ))
     filePermissions {
         unix(0x000001ed)  // rwxr-xr-x permissions, kotlin doesn't support octal literals
     }

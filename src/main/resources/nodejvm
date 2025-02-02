@@ -2,7 +2,7 @@
 
 # Check that we have the GraalVM node binary on our path, not normal node.
 if [[ "$GRAALVM_PATH" != "" ]]; then
-    node="$GRAALVM_PATH/node"
+    node="$GRAALVM_PATH/bin/node"
 else
     node=`which node`
 fi
@@ -29,7 +29,7 @@ fi
 
 # Figure out our current directory.
 nodejvmDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
-interopJar="$nodejvmDir/nodejs-interop-1.1.jar"
+interopJar="$nodejvmDir/nodejs-interop-@ver@.jar"
 
 if [[ ! -e "$interopJar" ]]; then
     echo "$interopJar not found, is this script installed correctly?"
